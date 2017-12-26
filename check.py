@@ -1,6 +1,7 @@
 import pandas
 import datetime
 import krakenex
+import pandas as pd
 #https://python3-krakenex.readthedocs.io/en/latest/
 #https://www.kraken.com/help/api#get-asset-info
 
