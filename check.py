@@ -8,7 +8,7 @@ import time
 
 k = krakenex.API(key='en0i96UpL6N62X23/hxVgAAfNIZMWhp78LFMc3441Yor4NeCjSIV/OhM',secret='LnLXo4FQqsrhNqubPU9F7VBifC75dNa4yC+QjMjXhQbYoc3Sr7BgFfBYLVsFyWgn7kLj6Xk9c/vSiVtT/hx/YA==')
 x = 0
-for _ in range(60):
+for _ in range(10):
     data_OHLC = k.query_public('OHLC',{'pair': 'XBTUSD','interval':5})
     ohlc_time = []
     ohlc_open=[]
@@ -31,7 +31,7 @@ for _ in range(60):
     ohlc_df = pd.DataFrame(ohlc_dict)
     
     x += 1
-    ohlc_df.to_csv('data{}'.format(x))
+    ohlc_df.to_csv('data{}.csv'.format(x))
     
     
-    time.sleep(60 - time.time() % 1)
+    time.sleep(6 - time.time() % 1)
