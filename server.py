@@ -2,8 +2,8 @@ import time
 import requests
 import psycopg2
 
-idt = 0
-while idt > -1:
+idt = 1
+while True:
 
     wex_data = requests.get(
                 'https://wex.nz/api/3/ticker/btc_usd-btc_eur-dsh_btc-dsh_usd-dsh_eur-eth_usd-eth_btc-eth_eur-bch_usd-bch_eur-bch_btc-zec_btc-zec_usd')
@@ -41,8 +41,8 @@ while idt > -1:
     bch_btc = round((cex_bch_btc / wex_bch_btc - 1) * 100, 2)
     bch_eur = round((cex_bch_eur / wex_bch_eur - 1) * 100, 2)
     bch_usd = round((cex_bch_usd / wex_bch_usd - 1) * 100, 2)
-    btñ_eur = round((cex_btc_eur / wex_btc_eur - 1) * 100, 2)
-    btñ_usd = round((cex_btc_usd / wex_btc_usd - 1) * 100, 2)
+    btc_eur = round((cex_btc_eur / wex_btc_eur - 1) * 100, 2)
+    btc_usd = round((cex_btc_usd / wex_btc_usd - 1) * 100, 2)
     dsh_btc = round((cex_dsh_btc / wex_dsh_btc - 1) * 100, 2)
     dsh_eur = round((cex_dsh_eur / wex_dsh_eur - 1) * 100, 2)
     dsh_usd = round((cex_dsh_usd / wex_dsh_usd - 1) * 100, 2)
@@ -56,7 +56,6 @@ while idt > -1:
 
     cur = conn.cursor()
     cur.execute("SET TIME ZONE 'Europe/Moscow';")
-    idt += idt
     cur.execute("INSERT INTO ts VALUES (CURRENT_TIMESTAMP, %s);" % idt)
     cur.execute("INSERT INTO birga(br, delta, idt) VALUES('bch_btc', %s, %s);", (bch_btc, idt))
     cur.execute("INSERT INTO birga(br, delta, idt) VALUES('bch_eur', %s, %s);", (bch_eur, idt))
@@ -71,7 +70,7 @@ while idt > -1:
     cur.execute("INSERT INTO birga(br, delta, idt) VALUES('eth_usd', %s, %s);", (eth_usd, idt))
     cur.execute("INSERT INTO birga(br, delta, idt) VALUES('zec_btc', %s, %s);", (zec_btc, idt))
     cur.execute("INSERT INTO birga(br, delta, idt) VALUES('zec_usd', %s, %s);", (zec_usd, idt))
-
+    idt = idt + 1
     conn.commit()
 
     cur.close()
