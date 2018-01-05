@@ -35,7 +35,7 @@ while True:
   cex_data3 = requests.get('https://cex.io/api/tickers/BTC/RUB')
 
   if (cex_data1.status_code == 200) and (cex_data2.status_code == 200) and (cex_data3.status_code == 200):
-        cex_answer = 'ok'
+      cex_answer = 'ok'
       cex_nums = []
       cex_values = []
       for i in range(0,len(cex_data1.json()['data'])):
