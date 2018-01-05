@@ -71,4 +71,3 @@ while True:
       time.sleep(10 - time.time() % 1)
   else:
       cex_answer = 'no connection'
-  time.sleep(10 - time.time() % 1)
