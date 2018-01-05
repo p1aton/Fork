@@ -11,7 +11,7 @@ while True:
           'usd_rur','eur_usd','eur_rur','ppc_btc','ppc_usd','dsh_rur','dsh_ltc','eth_ltc','eth_rur','bch_rur','bch_ltc','bch_dsh']
       d = []
       wex = []
-      conn = psycopg2.connect(dbname="igor", user="igor", password="Chordify2811", host="138.197.179.83")
+      conn = psycopg2.connect(dbname="igor")
       cur = conn.cursor()
       cur.execute("INSERT INTO ts VALUES (CURRENT_TIMESTAMP);")
       cur.execute("SELECT CURRVAL('ts_idt_seq');")
@@ -58,12 +58,8 @@ while True:
       cex_values = list(check.values())[1]
 
       cex = []
-      conn = psycopg2.connect(dbname="igor", user="igor", password="Chordify2811", host="138.197.179.83")
+      conn = psycopg2.connect(dbname="igor")
       cur = conn.cursor()
-      cur.execute("INSERT INTO ts VALUES (CURRENT_TIMESTAMP);")
-      cur.execute("SELECT CURRVAL('ts_idt_seq');")
-      idt = cur.fetchone()
-
       for i in range(0,len(cex_nums)):
           cex.append((cex_nums[i],cex_values[i], idt[0]))
       records_list_template = ','.join(['%s'] * len(cex))
