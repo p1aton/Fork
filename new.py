@@ -49,19 +49,30 @@ while True:
           cex_nums.append(cex_data3.json()['data'][i]['pair'].lower().replace(':', '_'))
           cex_values.append(cex_data3.json()['data'][i]['last'])
 
-      cex_nums = list(set(cex_nums))
-      cex_values = list(set(cex_values))
-      cex_list = []
+      result = {}
+      check = {'nums':cex_nums,'values':cex_values}
+      for key,value in check.items():
+          if value not in result.values():
+              result[key] = value
+      cex_nums = list(check.values())[0]
+      cex_values = list(check.values())[1]
+
+      cex = []
       conn = psycopg2.connect(dbname="igor", user="igor", password="Chordify2811", host="138.197.179.83")
       cur = conn.cursor()
+      cur.execute("INSERT INTO ts VALUES (CURRENT_TIMESTAMP);")
+      cur.execute("SELECT CURRVAL('ts_idt_seq');")
+      idt = cur.fetchone()
+
       for i in range(0,len(cex_nums)):
-          cex_list.append((cex_nums[i],cex_values[i], idt[0]))
+          cex.append((cex_nums[i],cex_values[i], idt[0]))
       records_list_template = ','.join(['%s'] * len(cex))
       insert_query = 'INSERT INTO cex(br, value, idt) values {}'.format(records_list_template)
       cur.execute(insert_query, cex)
       conn.commit()
       cur.close()
       conn.close()
+      time.sleep(10 - time.time() % 1)
   else:
       cex_answer = 'no connection'
   time.sleep(10 - time.time() % 1)
