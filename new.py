@@ -2,6 +2,7 @@ import time
 import requests
 import psycopg2
 while True:
+    start = time.time()
     wex_data = requests.get(
               'https://wex.nz/api/3/ticker/btc_usd-btc_eur-dsh_btc-dsh_usd-dsh_eur-eth_usd-eth_btc-eth_eur-bch_usd-bch_eur-bch_btc-zec_btc-zec_usd-btc_rur-ltc_btc-ltc_usd-ltc_rur-ltc_eur-nmc_btc-nmc_usd-nvc_btc-nvc_usd-usd_rur-eur_usd-eur_rur-ppc_btc-ppc_usd-dsh_rur-dsh_ltc-eth_ltc-eth_rur-bch_rur-bch_ltc-bch_dsh?ignore_invalid=1')
     if wex_data.status_code == 200:
@@ -32,6 +33,8 @@ while True:
         conn.close()
         else:
             wex_answer = 'no connection'
+            time.sleep(10 - (time.time() - start))
+        
 
 
     cex_data1 = requests.get('https://cex.io/api/tickers/BTC/USD')
@@ -67,6 +70,7 @@ while True:
         conn.commit()
         cur.close()
         conn.close()
-        time.sleep(10 - time.time() % 1)
+        time.sleep(10 - (time.time() - start))
     else:
         cex_answer = 'no connection'
+        time.sleep(10 - (time.time() - start))
