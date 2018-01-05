@@ -57,19 +57,13 @@ while True:
     cur.execute("INSERT INTO ts VALUES (CURRENT_TIMESTAMP);")
     cur.execute("SELECT CURRVAL('ts_idt_seq');")
     idt = cur.fetchone()
-    cur.execute("INSERT INTO birga(br, delta, idt) VALUES('bch_btc', %s, %s);", (bch_btc, idt))
-    cur.execute("INSERT INTO birga(br, delta, idt) VALUES('bch_eur', %s, %s);", (bch_eur, idt))
-    cur.execute("INSERT INTO birga(br, delta, idt) VALUES('bch_usd', %s, %s);", (bch_usd, idt))
-    cur.execute("INSERT INTO birga(br, delta, idt) VALUES('btc_eur', %s, %s);", (btc_eur, idt))
-    cur.execute("INSERT INTO birga(br, delta, idt) VALUES('btc_usd', %s, %s);", (btc_usd, idt))
-    cur.execute("INSERT INTO birga(br, delta, idt) VALUES('dsh_btc', %s, %s);", (dsh_btc, idt))
-    cur.execute("INSERT INTO birga(br, delta, idt) VALUES('dsh_eur', %s, %s);", (dsh_eur, idt))
-    cur.execute("INSERT INTO birga(br, delta, idt) VALUES('dsh_usd', %s, %s);", (dsh_usd, idt))
-    cur.execute("INSERT INTO birga(br, delta, idt) VALUES('eth_btc', %s, %s);", (eth_btc, idt))
-    cur.execute("INSERT INTO birga(br, delta, idt) VALUES('eth_eur', %s, %s);", (eth_eur, idt))
-    cur.execute("INSERT INTO birga(br, delta, idt) VALUES('eth_usd', %s, %s);", (eth_usd, idt))
-    cur.execute("INSERT INTO birga(br, delta, idt) VALUES('zec_btc', %s, %s);", (zec_btc, idt))
-    cur.execute("INSERT INTO birga(br, delta, idt) VALUES('zec_usd', %s, %s);", (zec_usd, idt))
+    data = [('bch_btc', bch_btc, idt[0]), ('bch_eur', bch_eur, idt[0]), ('bch_usd', bch_usd, idt[0]), ('btc_eur', btc_eur, idt[0]),
+        ('btc_usd', btc_usd, idt[0]), ('dsh_btc', dsh_btc, idt[0]), ('dsh_eur', dsh_eur, idt[0]), ('dsh_usd', dsh_usd, idt[0]),
+        ('eth_btc', eth_btc, idt[0]), ('eth_eur', eth_eur, idt[0]), ('eth_usd', eth_usd, idt[0]), ('zec_btc', zec_btc, idt[0]),
+        ('zec_usd', zec_usd, idt[0])]
+    records_list_template = ','.join(['%s'] * len(data))
+    insert_query = 'INSERT INTO birga(br, delta, idt) values {}'.format(records_list_template)
+    cur.execute(insert_query, data)
     conn.commit()
 
     cur.close()
