@@ -35,28 +35,20 @@ while True:
   cex_data3 = requests.get('https://cex.io/api/tickers/BTC/RUB')
 
   if (cex_data1.status_code == 200) and (cex_data2.status_code == 200) and (cex_data3.status_code == 200):
-      cex_answer = 'ok'
-
+        cex_answer = 'ok'
       cex_nums = []
       cex_values = []
       for i in range(0,len(cex_data1.json()['data'])):
           cex_nums.append(cex_data1.json()['data'][i]['pair'].lower().replace(':', '_'))
           cex_values.append(cex_data1.json()['data'][i]['last'])
       for i in range(0,len(cex_data2.json()['data'])):
-          cex_nums.append(cex_data2.json()['data'][i]['pair'].lower().replace(':', '_'))
-          cex_values.append(cex_data2.json()['data'][i]['last'])
+          if cex_data2.json()['data'][i]['pair'].lower().replace(':', '_') not in cex_nums:
+              cex_nums.append(cex_data2.json()['data'][i]['pair'].lower().replace(':', '_'))
+              cex_values.append(cex_data2.json()['data'][i]['last'])
       for i in range(0,len(cex_data3.json()['data'])):
-          cex_nums.append(cex_data3.json()['data'][i]['pair'].lower().replace(':', '_'))
-          cex_values.append(cex_data3.json()['data'][i]['last'])
-
-      result = {}
-      check = {'nums':cex_nums,'values':cex_values}
-      for key,value in check.items():
-          if value not in result.values():
-              result[key] = value
-      cex_nums = list(check.values())[0]
-      cex_values = list(check.values())[1]
-
+          if cex_data3.json()['data'][i]['pair'].lower().replace(':', '_') not in cex_nums:
+              cex_nums.append(cex_data3.json()['data'][i]['pair'].lower().replace(':', '_'))
+              cex_values.append(cex_data3.json()['data'][i]['last'])
       cex = []
       conn = psycopg2.connect(dbname="igor")
       cur = conn.cursor()
