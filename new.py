@@ -58,7 +58,8 @@ while True:
                 cex_values.append(cex_data3.json()['data'][i]['last'])
         for i in range(0,len(cex_nums)):
             if cex_nums[i][0:4] == 'dash':
-                cex_nums[i] = 'dsh'+cex_nums[0][3:7]
+                b = cex_nums[i][4:8]
+                cex_nums[i] = 'dsh'+b
         cex = []
         conn = psycopg2.connect(dbname="igor")
         cur = conn.cursor()
