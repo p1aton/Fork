@@ -9,18 +9,18 @@ while True:
       words = ['bch_btc','bch_eur','bch_usd','btc_eur','btc_usd','dsh_btc','dsh_eur','dsh_usd','eth_btc','eth_eur','eth_usd',
            'zec_btc', 'zec_usd','btc_rur','ltc_btc','ltc_usd','ltc_rur','ltc_eur','nmc_btc','nmc_usd','nvc_btc','nvc_usd',
           'usd_rur','eur_usd','eur_rur','ppc_btc','ppc_usd','dsh_rur','dsh_ltc','eth_ltc','eth_rur','bch_rur','bch_ltc','bch_dsh']
+      d = []
       wex = []
       conn = psycopg2.connect(dbname="igor", user="igor", password="Chordify2811", host="138.197.179.83")
       cur = conn.cursor()
       cur.execute("INSERT INTO ts VALUES (CURRENT_TIMESTAMP);")
       cur.execute("SELECT CURRVAL('ts_idt_seq');")
       idt = cur.fetchone()
-      d = []
       for x in words:
           d.append(wex_data.json()[x]['last'])
       for i in range(0,len(words)):
           wex.append((words[i], d[i], idt[0]))
-      records_list_template = ','.join(['%s'] * len(d))
+      records_list_template = ','.join(['%s'] * len(wex))
       insert_query = 'INSERT INTO wex(br, value, idt) values {}'.format(records_list_template)
       cur.execute(insert_query, wex)
       conn.commit()
@@ -51,15 +51,14 @@ while True:
 
       cex_nums = list(set(cex_nums))
       cex_values = list(set(cex_values))
-
       cex_list = []
       conn = psycopg2.connect(dbname="igor", user="igor", password="Chordify2811", host="138.197.179.83")
       cur = conn.cursor()
       for i in range(0,len(cex_nums)):
           cex_list.append((cex_nums[i],cex_values[i], idt[0]))
-      records_list_template = ','.join(['%s'] * len(d))
+      records_list_template = ','.join(['%s'] * len(cex))
       insert_query = 'INSERT INTO cex(br, value, idt) values {}'.format(records_list_template)
-      cur.execute(insert_query, wex)
+      cur.execute(insert_query, cex)
       conn.commit()
       cur.close()
       conn.close()
