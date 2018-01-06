@@ -29,7 +29,6 @@ while True:
                 words[i] = words[i][0:4] + 'rub'
         for i in range(0,len(words)):
             wex.append((words[i], d[i], wex_id[0],))
-        records_list_template = ','.join(['%s'] * len(wex))
         conn = psycopg2.connect(conn_string)
         cur = conn.cursor()
         psycopg2.extras.execute_values(cur, "INSERT INTO wex(br, value, idt) values %s", wex)
@@ -42,7 +41,6 @@ while True:
         wex = []
         for i in range(0,len(words)):
             wex.append((words[i], d[i], wex_id[0],))
-        records_list_template = ','.join(['%s'] * len(wex))
         conn = psycopg2.connect(conn_string)
         cur = conn.cursor()
         psycopg2.extras.execute_values(cur, "INSERT INTO wex(br, value, idt) values %s", wex)
