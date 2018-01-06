@@ -38,7 +38,6 @@ while True:
         cex = []
         for i in range(0,len(cex_nums)):
             cex.append((cex_nums[i],cex_values[i], cex_id[0]))
-        records_list_template = ','.join(['%s'] * len(cex))
         conn = psycopg2.connect(conn_string)
         cur = conn.cursor()
         psycopg2.extras.execute_values(cur, "INSERT INTO cex(br, value, idt) values %s", cex)
@@ -51,7 +50,6 @@ while True:
         cex = []
         for i in range(0,len(cex_nums)):
             cex.append((cex_nums[i],cex_values[i], cex_id[0]))
-        records_list_template = ','.join(['%s'] * len(cex))
         conn = psycopg2.connect(conn_string)
         cur = conn.cursor()
         psycopg2.extras.execute_values(cur, "INSERT INTO cex(br, value, idt) values %s", cex)
