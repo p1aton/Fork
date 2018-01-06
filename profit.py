@@ -1,6 +1,30 @@
 import psycopg2
 import psycopg2.extras
-conn_string = "dbname='igor' user='igor' password='Chordify2811' host='138.197.179.83'"
+
+# нужны плавающие курсы
+usd_rub = 57
+usd_eur = 0.83 
+btc_usd = 16500 
+bch_usd = 2740 
+dsh_usd = 1270 
+zec_usd = 615
+
+btc_com_usd = 32.515
+btc_com_rub = btc_com_usd * usd_rub
+btc_com_eur = btc_com_usd * usd_eur
+eth_com_usd = 2.452
+eth_com_eur = eth_com_usd*usd_eur
+eth_com_btc = eth_com_usd/btc_usd
+dsh_com_usd = 0.637
+dsh_com_eur = dsh_com_usd * usd_eur
+dsh_com_btc = dsh_com_usd/dsh_usd
+zec_com_usd = 0.03
+zec_com_btc = zec_com_usd/zec_usd
+bch_com_usd = 0.219
+bch_com_btc = bch_com_usd/bch_usd
+bch_com_eur = bch_com_usd*usd_eur
+
+conn_string = "dbname='igor' user='server' password='Chordify2811' host='138.197.179.83'"
 wex_com = 0.998
 wex_out_com = 0.999
 cex_com = 0.998
@@ -22,8 +46,39 @@ conn.close()
 names = []
 wex_cex_results = []
 pairs = []
+
 for i in range(0, len(wex_cex_data)):
-    wex_cex_results.append(((float(wex_cex_data[i][2]) * wex_com * wex_out_com * cex_com) / float(wex_cex_data[i][1]) - 1) * 100)
+    letter1 = wex_cex_data[i][0][0:3]
+    letter2 = wex_cex_data[i][0][4:7]
+    if letter1 == 'btc' and letter2 == 'usd':
+        wex_cex_results.append((((float(wex_cex_data[i][2]) * wex_com * wex_out_com -btc_com_usd)* cex_com) / float(wex_cex_data[i][1]) - 1) * 100)
+    elif letter1 == 'btc' and letter2 == 'rub':
+        wex_cex_results.append((((float(wex_cex_data[i][2]) * wex_com * wex_out_com -btc_com_rub)* cex_com) / float(wex_cex_data[i][1]) - 1) * 100)
+    elif letter1 == 'btc' and letter2 == 'eur':
+        wex_cex_results.append((((float(wex_cex_data[i][2]) * wex_com * wex_out_com -btc_com_eur)* cex_com) / float(wex_cex_data[i][1]) - 1) * 100)
+    elif letter1 == 'eth' and letter2 == 'usd':
+        wex_cex_results.append((((float(wex_cex_data[i][2]) * wex_com * wex_out_com -eth_com_usd)* cex_com) / float(wex_cex_data[i][1]) - 1) * 100)
+    elif letter1 == 'eth' and letter2 == 'btc':
+        wex_cex_results.append((((float(wex_cex_data[i][2]) * wex_com * wex_out_com -eth_com_btc)* cex_com) / float(wex_cex_data[i][1]) - 1) * 100)
+    elif letter1 == 'eth' and letter2 == 'eur':
+        wex_cex_results.append((((float(wex_cex_data[i][2]) * wex_com * wex_out_com -eth_com_eur)* cex_com) / float(wex_cex_data[i][1]) - 1) * 100)
+    elif letter1 == 'bch' and letter2 == 'usd':
+        wex_cex_results.append((((float(wex_cex_data[i][2]) * wex_com * wex_out_com -bch_com_usd)* cex_com) / float(wex_cex_data[i][1]) - 1) * 100)
+    elif letter1 == 'bch' and letter2 == 'btc':
+        wex_cex_results.append((((float(wex_cex_data[i][2]) * wex_com * wex_out_com -bch_com_btc)* cex_com) / float(wex_cex_data[i][1]) - 1) * 100)
+    elif letter1 == 'bch' and letter2 == 'eur':
+        wex_cex_results.append((((float(wex_cex_data[i][2]) * wex_com * wex_out_com -bch_com_eur)* cex_com) / float(wex_cex_data[i][1]) - 1) * 100)
+    elif letter1 == 'dsh' and letter2 == 'usd':
+        wex_cex_results.append((((float(wex_cex_data[i][2]) * wex_com * wex_out_com -dsh_com_usd)* cex_com) / float(wex_cex_data[i][1]) - 1) * 100)
+    elif letter1 == 'dsh' and letter2 == 'btc':
+        wex_cex_results.append((((float(wex_cex_data[i][2]) * wex_com * wex_out_com -dsh_com_btc)* cex_com) / float(wex_cex_data[i][1]) - 1) * 100)
+    elif letter1 == 'dsh' and letter2 == 'eur':
+        wex_cex_results.append((((float(wex_cex_data[i][2]) * wex_com * wex_out_com -dsh_com_eur)* cex_com) / float(wex_cex_data[i][1]) - 1) * 100)
+    elif letter1 == 'zec' and letter2 == 'usd':
+        wex_cex_results.append((((float(wex_cex_data[i][2]) * wex_com * wex_out_com -zec_com_usd)* cex_com) / float(wex_cex_data[i][1]) - 1) * 100)
+    elif letter1 == 'zec' and letter2 == 'btc':
+        wex_cex_results.append((((float(wex_cex_data[i][2]) * wex_com * wex_out_com -zec_com_btc)* cex_com) / float(wex_cex_data[i][1]) - 1) * 100)
+
 for i in range(0, len(wex_cex_data)):
     names.append(wex_cex_data[i][0])
 for i in range(0,len(names)):
