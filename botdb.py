@@ -1,0 +1,11 @@
+import psycopg2
+conn = psycopg2.connect(dbname="igor", user="igor", password="Chordify2811", host="138.197.179.83")
+cur = conn.cursor()
+cur.execute("SELECT idt FROM wex ORDER BY idt DESC LIMIT 1;")
+idw = cur.fetchone()
+cur.execute("SELECT idt FROM cex ORDER BY idt DESC LIMIT 1;")
+idc = cur.fetchone()
+cur.execute("SELECT wex.br, wex.value, cex.value FROM wex INNER JOIN cex ON cex.br=wex.br WHERE wex.idt=(%s) and cex.idt=(%s) LIMIT 14;", (idw, idc,))
+print(cur.fetchall())
+cur.close()
+conn.close()
