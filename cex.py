@@ -1,6 +1,7 @@
 import requests
 import psycopg2
 import psycopg2.extras
+import time
 conn_string = "dbname='igor'"
 while True:
     start = time.time()
