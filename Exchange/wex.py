@@ -26,7 +26,7 @@ while True:
         for i in range(0,len(words)):
             if words[i][4:7] == 'rur':
                 words[i] = words[i][0:4] + 'rub' 
-    except :
+    except requests.exceptions.Timeout:
         conn = psycopg2.connect(conn_string)
         cur = conn.cursor()
         cur.execute("INSERT INTO wex_ts(ts) VALUES (CURRENT_TIMESTAMP);")
