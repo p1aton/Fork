@@ -17,9 +17,9 @@ while True:
     start = time.time()
     try:
         poloniex_data = polo.returnTicker()
-        if poloniex_data != 0: #важное условие, чтобы в случае except предыдущие значения не стерлись
-            poloniex_last_price = []
-            poloniex = []
+ 
+        poloniex_last_price = []
+        poloniex = []
         
         # poloniex_id = cur.fetchone()
         
@@ -32,11 +32,11 @@ while True:
             else:
                 poloniex.append((poloniex_words[i],poloniex_last_price[i],)) # сюда тоже дописать poloniex_id[0]
         
-        poloniex_answer = 'ok'
-        time.sleep(10 - (time.time() - start))
+        poloniex_answer = 1
         
-    except:
-        poloniex_answer = 'no connection'
+        
+    except PoloniexError:
+        poloniex_answer = 0
         poloniex = []
         for i in range(0,len(poloniex_words)):
             if polo_tickers[i][0:4] == 'USDT':
@@ -49,4 +49,4 @@ while True:
         #код для баз данных    
         
         
-        time.sleep(10 - (time.time() - start))
+    time.sleep(10 - (time.time() - start))
