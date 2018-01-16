@@ -41,16 +41,17 @@ bitfinex_values = []
 
 while True:
     start = time.time()
+    conn = psycopg2.connect(conn_string)
+    cur = conn.cursor()
+    cur.execute("INSERT INTO btfnx_ts(ts) VALUES (CURRENT_TIMESTAMP);")
+    cur.execute("SELECT CURRVAL('btfnx_ts_id_seq');")
+    btfnx_id = cur.fetchone()
+    conn.commit()
+    cur.close()
+    conn.close()
+
     try:
-        conn = psycopg2.connect(conn_string)
-        cur = conn.cursor()
-        cur.execute("INSERT INTO btfnx_ts(ts) VALUES (CURRENT_TIMESTAMP);")
-        cur.execute("SELECT CURRVAL('btfnx_ts_id_seq');")
-        btfnx_id = cur.fetchone()
-        conn.commit()
-        cur.close()
-        conn.close()
-        
+         
         for i in bitfinex_pairs:
             bitfinex_values.append(wss.tickers(i).get(block=False)[0][0][6])
         
