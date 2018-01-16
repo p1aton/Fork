@@ -1,5 +1,6 @@
 import binance
 from binance.client import Client
+import time
 client = Client('dtiWWNHXnLzD2RNe2QivRsRnrUoKWZksOgl9MwZEGuTFdyr3X2hnLZgzC5OgFp93', 
                'LjprvlFaGf6rc42eAynezgApSbEcCYz9YGWU3EsLO9bmMxJkhDc41YrLodjnzfPR')
 binance_pairs = ['ETHBTC','LTCBTC','NEOBTC','BTCUSDT','ETHUSDT','ZECBTC','ZECETH','ETCETH','ETCBTC','DASHBTC','DASHETH','XRPBTC',
@@ -36,6 +37,7 @@ while True:
         print(binance)
     except Exception:
         binance_answer = 0
+		#записывать предыдущее как обычно в случае ошибки
     
     finally:
         
