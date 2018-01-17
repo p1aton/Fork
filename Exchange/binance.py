@@ -7,17 +7,26 @@ binance_pairs = ['ETHBTC','LTCBTC','NEOBTC','BTCUSDT','ETHUSDT','ZECBTC','ZECETH
                 'XRPETH','XMRBTC','XMRETH','LTCETH','LTCUSDT']
 binance_nums = ['eth_btc','ltc_btc','neo_btc','btc_usd','eth_usd','zec_btc','zec_eth','etc_eth','etc_btc','dsh_btc','dsh_eth',
                 'xrp_btc','xrp_eth','xmr_btc','xmr_eth','ltc_eth','ltc_usd']
+conn_string = "dbname='igor' user='igor' password='Chordify2811' host='138.197.179.83'"
 usdt_usd = 1.01
 
 while True:
     start = time.time()
     try:
+        conn = psycopg2.connect(conn_string)
+        cur = conn.cursor()
+        cur.execute("INSERT INTO binance_ts(ts) VALUES (CURRENT_TIMESTAMP);")
+        cur.execute("SELECT CURRVAL('binance_ts_id_seq');")
+        binance_id = cur.fetchone()
+        conn.commit()
+        cur.close()
+        conn.close()
+        prices = client.get_all_tickers()
         binance = []
         binance_values = []
         binance_p = []
         binance_s = []
         binance_right_p = []
-        prices = client.get_all_tickers()
         for i in range(0,len(prices)):
                 binance_p.append(prices[i]['price'])
                 binance_s.append(prices[i]['symbol'])
@@ -31,16 +40,19 @@ while True:
         
         
         for i in range(0,len(binance_nums)):
-            binance.append( (binance_nums[i],binance_values[i]) ) # add here ind[0]
+            binance.append( (binance_nums[i], binance_values[i], binance_id[0],) ) # add here ind[0]
         
         binance_answer = 1
-        print(binance)
     except Exception:
         binance_answer = 0
-		#записывать предыдущее как обычно в случае ошибки
     
     finally:
-        
+        conn = psycopg2.connect(conn_string)
+        cur = conn.cursor()
+        psycopg2.extras.execute_values(cur, "INSERT INTO binance(br, value, idt) values %s", binance)
+        conn.commit()
+        cur.close()
+        conn.close()
         time.sleep(10 - (time.time() - start))
         
-
+time.sleep(10 - (time.time() - start))

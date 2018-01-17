@@ -4,16 +4,20 @@ import psycopg2
 import psycopg2.extras
 
 # getting last crypto-data from databases
-conn_string = "dbname='igor' user='igor' password='Chordify2811' host='138.197.179.83'"
+conn_string = "dbname='igor' user='server' password='Chordify2811' host='138.197.179.83'"
 conn = psycopg2.connect(conn_string)
 cur = conn.cursor()
-cur.execute("SELECT idt FROM wex ORDER BY idt DESC LIMIT 1;")
+cur.execute("SELECT id FROM wex_ts ORDER BY id DESC LIMIT 1;")
 idw = cur.fetchone()
-cur.execute("SELECT idt FROM cex ORDER BY idt DESC LIMIT 1;")
+cur.execute("SELECT id FROM cex_ts ORDER BY id DESC LIMIT 1;")
 idc = cur.fetchone()
-cur.execute("SELECT idt FROM pol ORDER BY idt DESC LIMIT 1;")
+cur.execute("SELECT id FROM pol_ts ORDER BY id DESC LIMIT 1;")
 idp = cur.fetchone()
-cur.execute("SELECT currencies.cur, wex.value, cex.value, pol.value FROM currencies FULL OUTER JOIN (SELECT * FROM wex WHERE wex.idt=(%s)) wex ON currencies.cur=wex.br FULL OUTER JOIN (SELECT * FROM cex WHERE cex.idt=(%s)) cex ON currencies.cur=cex.br FULL OUTER JOIN (SELECT * FROM pol WHERE pol.idt=(%s)) pol ON currencies.cur=pol.br;", (idw, idc, idp,))
+cur.execute("SELECT id FROM btfnx_ts ORDER BY id DESC LIMIT 1;")
+idbtfnx = cur.fetchone()
+cur.execute("SELECT id FROM binance_ts ORDER BY id DESC LIMIT 1;")
+idbinance = cur.fetchone()
+cur.execute("SELECT currencies.cur, wex.value, cex.value, pol.value, btfnx.value, binance.value FROM currencies FULL OUTER JOIN (SELECT * FROM wex WHERE wex.idt=(%s)) wex ON currencies.cur=wex.br FULL OUTER JOIN (SELECT * FROM cex WHERE cex.idt=(%s)) cex ON currencies.cur=cex.br FULL OUTER JOIN (SELECT * FROM pol WHERE pol.idt=(%s)) pol ON currencies.cur=pol.br FULL OUTER JOIN (SELECT * FROM btfnx WHERE btfnx.idt=(%s)) btfnx ON currencies.cur=btfnx.br FULL OUTER JOIN (SELECT * FROM binance WHERE binance.idt=(%s)) binance ON currencies.cur=binance.br;", (idw, idc, idp, idbtfnx, idbinance))
 data = cur.fetchall()
 cur.close()
 conn.close()
