@@ -9,9 +9,6 @@ import config
 conn_string = config.conn_string
 q = queue.Queue() 
 
-conn_string = "dbname='igor' user='igor' password='Chordify2811' host='138.197.179.83'"
-
-
 bitfinex_pairs = ["BTCUSD","LTCUSD","LTCBTC","ETHUSD","ETHBTC","ETCBTC","ETCUSD","ZECUSD","ZECBTC",
          "XMRUSD","XMRBTC","DSHUSD","DSHBTC","BTCEUR","XRPUSD","XRPBTC","BCHUSD","BCHBTC","BCHETH"]
 
