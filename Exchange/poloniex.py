@@ -2,7 +2,8 @@ from poloniex import Poloniex
 import psycopg2
 import psycopg2.extras
 import time
-conn_string = "dbname='igor' user='igor' password='Chordify2811' host='138.197.179.83'"
+import config
+conn_string = config.conn_string
 polo = Poloniex()
 usdt_usd = 1.01 # парсить актуальную с poloniex
 
