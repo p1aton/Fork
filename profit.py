@@ -3,8 +3,8 @@ import pandas as pd
 import crypto_parsing
 import psycopg2
 import psycopg2.extras
-import config
-conn_string = config.conn_string
+import time
+conn_string = "dbname='igor' user='igor' password='Chordify2811' host='138.197.179.83'"
 
 # getting last crypto-data from databases
 while True:
@@ -90,7 +90,7 @@ while True:
     cur = conn.cursor()
     cur.execute("INSERT INTO pairs_ts(ts) VALUES (CURRENT_TIMESTAMP);")
     cur.execute("SELECT CURRVAL('pairs_ts_id_seq');")
-    wex_id = cur.fetchone()
+    idt = cur.fetchone()
     conn.commit()
     cur.close()
     conn.close()
