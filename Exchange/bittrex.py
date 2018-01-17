@@ -1,6 +1,8 @@
 import requests
 import time
 import config
+import psycopg2
+import psycopg2.extras
 conn_string = config.conn_string
 usdt_usd = 1.01
 
