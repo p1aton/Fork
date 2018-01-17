@@ -1,13 +1,14 @@
 import binance
 from binance.client import Client
 import time
+import config
+conn_string = config.conn_string
 client = Client('dtiWWNHXnLzD2RNe2QivRsRnrUoKWZksOgl9MwZEGuTFdyr3X2hnLZgzC5OgFp93', 
                'LjprvlFaGf6rc42eAynezgApSbEcCYz9YGWU3EsLO9bmMxJkhDc41YrLodjnzfPR')
 binance_pairs = ['ETHBTC','LTCBTC','NEOBTC','BTCUSDT','ETHUSDT','ZECBTC','ZECETH','ETCETH','ETCBTC','DASHBTC','DASHETH','XRPBTC',
                 'XRPETH','XMRBTC','XMRETH','LTCETH','LTCUSDT']
 binance_nums = ['eth_btc','ltc_btc','neo_btc','btc_usd','eth_usd','zec_btc','zec_eth','etc_eth','etc_btc','dsh_btc','dsh_eth',
                 'xrp_btc','xrp_eth','xmr_btc','xmr_eth','ltc_eth','ltc_usd']
-conn_string = "dbname='igor' user='igor' password='Chordify2811' host='138.197.179.83'"
 usdt_usd = 1.01
 
 while True:
