@@ -45,7 +45,6 @@ while True:
             else:  
                 bittrex.append((bittrex_nums[i],bittrex_values[i], bittrex_id[0],))
         bittrex_answer = 1
-        print(bittrex)
     except Exception:
         bittrex_answer = 0
     
