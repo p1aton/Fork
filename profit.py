@@ -38,34 +38,43 @@ conn.close()
 # comissions 
 
 out_com = {'wex':{'btc':0.001, "ltc":0.001, 'nmc':0.1, 'ppc':0.1, 'dsh':0.001, 'eth':0.003, 'bch':0.001, 'zec':0.001},
-          'cex':{'btc':0, 'xrp':0, 'ppc':0, 'dsh':0, 'eth':0, 'bch':0, 'zec':0},
-          'pol':{'btc':0, 'xrp':0, 'ppc':0,'dsh':0, 'eth':0, 'bch':0, 'zec':0,'ltc':0,'xmr':0,'etc':0}}
-blockhain_com = {'usd':{'btc':28.75,'bch':0.418,'eth':2.596,'ltc':0.295,'xrp':0.0161,'dsh':0.441,'xmr':10.476,'zec':0.0006,'ppc':0.0923,
-               'nmc':0.0077,'etc':0.0275},
-                'btc':{'btc':0.001982,'bch':0.000028,'eth':0.000179,'ltc':0.00002,'xrp':0.000001,'dsh':0.00003,'xmr':0.00072,
-                       'zec':0.00000004,'ppc':0.0000063655,'nmc':0.0000005310,'etc':0.0000018966},
-                'eur':{'btc':23.575,'bch':0.34276,'eth':2.12872,'ltc':0.2419,'xrp':0.0132,'dsh':0.36162,'xmr':8.59032,
-                       'zec':0.000492,'ppc':0.075686,'nmc':0.006314,'etc':0.02255},
-                'rub':{'btc':1628.6875,'bch':23.6797,'eth':147.0634,'ltc':16.71175,'xrp':0.912,'dsh':24.98265,'xmr':593.4654,
-                       'zec':0.03399,'ppc':5.228795,'nmc':0.4362,'etc':1.557875}}
-trade_com = {'wex':0.998,'cex':0.9975,'pol':0.9975}
+        'cex':{'btc':0, 'xrp':0, 'ppc':0, 'dsh':0, 'eth':0, 'bch':0, 'zec':0},
+        'pol':{'btc':0, 'xrp':0, 'ppc':0,'dsh':0, 'eth':0, 'bch':0, 'zec':0,'ltc':0,'xmr':0,'etc':0},
+        'btf':{'btc':0.0008, 'xrp':0.02,'dsh':0.01, 'eth':0.01, 'bch':0.0001, 'zec':0.001,'ltc':0.001,'xmr':0.04,'etc':0.01,'neo':0},
+        'bnn':{'btc':0.001, 'xrp':0.25,'dsh':0.002, 'eth':0.01, 'zec':0.005,'ltc':0.01,'xmr':0.04,'etc':0.01,'neo':0},
+        'btt':{'btc':0, 'xrp':0,'dsh':0, 'eth':0, 'zec':0,'ltc':0,'xmr':0,'etc':0,'neo':0}}
 
-com = {'wex':0.998,'cex':0.9975,'pol':0.9975}
+com_usd,com_btc,com_eth,com_eur,com_rub = get_all_comissions()
+
+blockchain_com = {'usd':com_usd,
+                'btc':com_btc,
+                'eth':com_eth,
+                'eur':com_eur,
+                'rub':com_usd}
+
+
+trade_com = {'wex':0.998,'cex':0.9975,'pol':0.9975,'btf':0.998,'bnn':0.999,'btt':0.9975}
 
 
 # transforming the data into convenient blocks
+names = []
 wex_data = []
 cex_data = []
 poloniex_data = []
-names = []
+btf_data = []
+bnn_data = []
+btt_data = []
 for i in data:
     names.append(i[0])
     wex_data.append(i[1])
     cex_data.append(i[2])
     poloniex_data.append(i[3])
+    btf_data.append(i[4])
+    bnn_data.append(i[5])
+    btt_data.append(i[6])
 
-curr = {'names':names,'wex':wex_data,'cex':cex_data,'pol':poloniex_data} # this is dict to work with
-
+curr = {'names':names,'wex':wex_data,'cex':cex_data,'pol':poloniex_data,'btf':btf_data,
+       'bnn':bnn_data,'btt':btt_data} # this is dict to work with
 
 # blocks to write final results
 exchange_first = []   
@@ -86,16 +95,21 @@ for j in curr:  # loop for choosing first exchange
                     letter1 = curr['names'][i][0:3]
                     letter2 = curr['names'][i][4:7]
                     if curr[exchange1][i]!=None and curr[exchange2][i]!=None:
+                        print(exchange1,exchange2,letter1,letter2)
                         exchange_first.append(exchange1)
                         exchange_second.append(exchange2)
                         pair.append(curr['names'][i])
                         first_price.append(curr[exchange1][i])
                         second_price.append(curr[exchange2][i])
-                        delta.append( ((amount * trade_com[exchange1] - out_com[exchange1][letter1]*amount)*float(curr[exchange1][i]) - blockhain_com[letter2][letter1])/float(curr[exchange1][i]) * trade_com[exchange2] * float(curr[exchange2][i])/float(curr[exchange1][i])/amount)
-
-# preparing for output                  
+                        delta.append( ((amount * trade_com[exchange1] - out_com[exchange1][letter1]*amount)*float(curr[exchange1][i]) - float(blockchain_com[letter2][letter1]))/float(curr[exchange1][i]) * trade_com[exchange2] * float(curr[exchange2][i])/float(curr[exchange1][i])/amount)
+itog=[]
+for i in range(len(exchange1)):
+    itog.append((exchange_first[i],exchange_second[i],pair[i],first_price[i],second_price[i],delta[i]))
+# preparing for output 
+''' 
 currencies = {'exchange1':exchange_first,'exchange2':exchange_second,'pair':pair,'first_price':first_price,'second_price':second_price,'delta':delta}
 currencies = pd.DataFrame(currencies)
 cols = ['exchange1','exchange2','pair','first_price','second_price','delta']
 currencies = currencies[cols]
 currencies.sort_values(by='delta',ascending=False)
+'''
