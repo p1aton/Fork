@@ -40,7 +40,7 @@ while True:
         
         
         for i in range(0,len(binance_nums)):
-            binance.append( (binance_nums[i], binance_values[i], binance_id[0],) ) # add here ind[0]
+            binance.append((binance_nums[i], binance_values[i], binance_id[0],)) # add here ind[0]
         
         binance_answer = 1
     except Exception:
@@ -54,5 +54,3 @@ while True:
         cur.close()
         conn.close()
         time.sleep(10 - (time.time() - start))
-        
-time.sleep(10 - (time.time() - start))
