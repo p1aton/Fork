@@ -5,7 +5,8 @@ import psycopg2
 import psycopg2.extras
 from btfxwss import BtfxWss
 import queue
-
+import config
+conn_string = config.conn_string
 q = queue.Queue() 
 
 conn_string = "dbname='igor' user='igor' password='Chordify2811' host='138.197.179.83'"
