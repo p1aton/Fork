@@ -5,10 +5,11 @@ def write_ts(x):
     cur = conn.cursor()
     cur.execute("INSERT INTO {}(ts) VALUES (CURRENT_TIMESTAMP);".format(x+'_ts'))
     cur.execute("SELECT CURRVAL('{}');".format(x+'_ts_id_seq'))
-    wex_id = cur.fetchone()
+    idt = cur.fetchone()
     conn.commit()
     cur.close()
     conn.close()
+    return idt
 def write_data(x, y):
     conn = psycopg2.connect(conn_string)
     cur = conn.cursor()
