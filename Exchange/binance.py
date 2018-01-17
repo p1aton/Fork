@@ -2,6 +2,8 @@ import binance
 from binance.client import Client
 import time
 import config
+import psycopg2
+import psycopg2.extras
 conn_string = config.conn_string
 client = Client('dtiWWNHXnLzD2RNe2QivRsRnrUoKWZksOgl9MwZEGuTFdyr3X2hnLZgzC5OgFp93', 
                'LjprvlFaGf6rc42eAynezgApSbEcCYz9YGWU3EsLO9bmMxJkhDc41YrLodjnzfPR')
