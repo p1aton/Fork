@@ -4,7 +4,9 @@ import psycopg2
 import psycopg2.extras
 
 # getting last crypto-data from databases
-conn_string = "dbname='igor' user='server' password='Chordify2811' host='138.197.179.83'"
+import psycopg2
+import psycopg2.extras
+conn_string = "dbname='igor' user='igor' password='Chordify2811' host='138.197.179.83'"
 conn = psycopg2.connect(conn_string)
 cur = conn.cursor()
 cur.execute("SELECT id FROM wex_ts ORDER BY id DESC LIMIT 1;")
@@ -17,7 +19,18 @@ cur.execute("SELECT id FROM btfnx_ts ORDER BY id DESC LIMIT 1;")
 idbtfnx = cur.fetchone()
 cur.execute("SELECT id FROM binance_ts ORDER BY id DESC LIMIT 1;")
 idbinance = cur.fetchone()
-cur.execute("SELECT currencies.cur, wex.value, cex.value, pol.value, btfnx.value, binance.value FROM currencies FULL OUTER JOIN (SELECT * FROM wex WHERE wex.idt=(%s)) wex ON currencies.cur=wex.br FULL OUTER JOIN (SELECT * FROM cex WHERE cex.idt=(%s)) cex ON currencies.cur=cex.br FULL OUTER JOIN (SELECT * FROM pol WHERE pol.idt=(%s)) pol ON currencies.cur=pol.br FULL OUTER JOIN (SELECT * FROM btfnx WHERE btfnx.idt=(%s)) btfnx ON currencies.cur=btfnx.br FULL OUTER JOIN (SELECT * FROM binance WHERE binance.idt=(%s)) binance ON currencies.cur=binance.br;", (idw, idc, idp, idbtfnx, idbinance))
+cur.execute("SELECT id FROM bittrex_ts ORDER BY id DESC LIMIT 1;")
+idbittrex = cur.fetchone()
+cur.execute("""
+    SELECT currencies.cur, wex.value, cex.value, pol.value, btfnx.value, binance.value, bittrex.value 
+    FROM currencies 
+    FULL OUTER JOIN (SELECT * FROM wex WHERE wex.idt=(%s)) wex ON currencies.cur=wex.br 
+    FULL OUTER JOIN (SELECT * FROM cex WHERE cex.idt=(%s)) cex ON currencies.cur=cex.br 
+    FULL OUTER JOIN (SELECT * FROM pol WHERE pol.idt=(%s)) pol ON currencies.cur=pol.br 
+    FULL OUTER JOIN (SELECT * FROM btfnx WHERE btfnx.idt=(%s)) btfnx ON currencies.cur=btfnx.br 
+    FULL OUTER JOIN (SELECT * FROM binance WHERE binance.idt=(%s)) binance ON currencies.cur=binance.br
+    FULL OUTER JOIN (SELECT * FROM bittrex WHERE bittrex.idt=(%s)) bittrex ON currencies.cur=bittrex.br;
+    """, (idw, idc, idp, idbtfnx, idbinance, idbittrex))
 data = cur.fetchall()
 cur.close()
 conn.close()
