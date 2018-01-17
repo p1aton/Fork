@@ -29,7 +29,7 @@ while True:
         conn.commit()
         cur.close()
         conn.close()
-        data = requests.get('https://bittrex.com/api/v1.1/public/getmarketsummaries').json()
+        data = requests.get('https://bittrex.com/api/v1.1/public/getmarketsummaries', timeout = 3).json()
 
         for i in data['result']:
             bittrex_s.append(i['MarketName'])
