@@ -1,4 +1,3 @@
-import logging
 import time
 import sys
 import websocket
@@ -10,16 +9,6 @@ import queue
 q = queue.Queue() 
 
 conn_string = "dbname='igor' user='igor' password='Chordify2811' host='138.197.179.83'"
-log = logging.getLogger(__name__)
-
-fh = logging.FileHandler('test.log')
-fh.setLevel(logging.DEBUG)
-sh = logging.StreamHandler(sys.stdout)
-sh.setLevel(logging.DEBUG)
-
-log.addHandler(sh)
-log.addHandler(fh)
-logging.basicConfig(level=logging.DEBUG, handlers=[fh, sh])
 
 
 bitfinex_pairs = ["BTCUSD","LTCUSD","LTCBTC","ETHUSD","ETHBTC","ETCBTC","ETCUSD","ZECUSD","ZECBTC",
