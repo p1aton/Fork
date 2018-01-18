@@ -106,7 +106,6 @@ while True:
                         letter1 = curr['names'][i][0:3]
                         letter2 = curr['names'][i][4:7]
                         if curr[exchange1][i]!=None and curr[exchange2][i]!=None:
-                            print(exchange1,exchange2,letter1,letter2)
                             exchange_first.append(exchange1)
                             exchange_second.append(exchange2)
                             pair.append(curr['names'][i])
@@ -122,7 +121,6 @@ while True:
     conn.commit()
     cur.close()
     conn.close()
-    print(time.time() - start)
     time.sleep(10 - (time.time() - start))
 # preparing for output 
 ''' 
