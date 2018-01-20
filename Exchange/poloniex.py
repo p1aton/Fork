@@ -37,7 +37,7 @@ while True:
             else:
                 poloniex.append((poloniex_words[i],poloniex_last_price[i], pol_id[0]))  
 
-    except PoloniexError:
+    except Exception:
         poloniex_answer = 0
     
     finally:

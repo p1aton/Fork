@@ -44,7 +44,7 @@ while True:
         for i in range(0,len(cex_nums)):
             cex.append((cex_nums[i],cex_values[i], cex_id[0]))
     
-    except requests.exceptions.Timeout:
+    except Exception:
         cex_answer = 0
 
     finally:

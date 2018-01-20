@@ -50,6 +50,9 @@ while True:
     
         bitfinex_answer = 0
     
+    except Exception: 
+        bitfinex_answer = 0
+    
     finally:
         conn = psycopg2.connect(conn_string)
         cur = conn.cursor()

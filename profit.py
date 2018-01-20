@@ -44,7 +44,8 @@ while True:
             'pol':{'btc':0, 'xrp':0, 'ppc':0,'dsh':0, 'eth':0, 'bch':0, 'zec':0,'ltc':0,'xmr':0,'etc':0},
             'btf':{'btc':0.0008, 'xrp':0.02,'dsh':0.01, 'eth':0.01, 'bch':0.0001, 'zec':0.001,'ltc':0.001,'xmr':0.04,'etc':0.01,'neo':0},
             'bnn':{'btc':0.001, 'xrp':0.25,'dsh':0.002, 'eth':0.01, 'zec':0.005,'ltc':0.01,'xmr':0.04,'etc':0.01,'neo':0},
-            'btt':{'btc':0, 'xrp':0,'dsh':0, 'eth':0, 'zec':0,'ltc':0,'xmr':0,'etc':0,'neo':0}}
+            'btt':{'btc':0, 'xrp':0,'dsh':0, 'eth':0, 'zec':0,'ltc':0,'xmr':0,'etc':0,'neo':0},
+            'bhb':{'krw':1000, 'btc': 0.003, 'eth':0.01, 'dsh': 0.01, 'ltc':0.01, 'etc': 0.01, 'xrp': 1, 'bch':0.005, 'xmr':0.05, 'zec':0.001}}
 
     com_usd,com_btc,com_eth,com_eur,com_rub = crypto_parsing.get_all_comissions()
 
@@ -55,7 +56,7 @@ while True:
                     'rub':com_usd}
 
 
-    trade_com = {'wex':0.998,'cex':0.9975,'pol':0.9975,'btf':0.998,'bnn':0.999,'btt':0.9975}
+    trade_com = {'wex':0.998,'cex':0.9975,'pol':0.9975,'btf':0.998,'bnn':0.999,'btt':0.9975,'bhb':0.9985}
 
 
     # transforming the data into convenient blocks
@@ -66,6 +67,7 @@ while True:
     btf_data = []
     bnn_data = []
     btt_data = []
+    bhb_data = []
     for i in data:
         names.append(i[0])
         wex_data.append(i[1])
@@ -74,6 +76,7 @@ while True:
         btf_data.append(i[4])
         bnn_data.append(i[5])
         btt_data.append(i[6])
+        bhb_data.append(i[7])
 
     curr = {'names':names,'wex':wex_data,'cex':cex_data,'pol':poloniex_data,'btf':btf_data,
            'bnn':bnn_data,'btt':btt_data} # this is dict to work with
