@@ -124,7 +124,7 @@ while True:
                             delta.append( ((amount * trade_com[exchange1] - out_com[exchange1][letter1]*amount)*float(curr[exchange1][i]) - float(blockchain_com[letter2][letter1]))/float(curr[exchange1][i]) * trade_com[exchange2] * float(curr[exchange2][i])/float(curr[exchange1][i])/amount)
     itog=[]
     for i in range(len(exchange_first)):
-        itog.append((exchange_first[i],exchange_second[i],pair[i],first_price[i],second_price[i],delta[i],idt[0]))
+        itog.append((exchange_first[i],exchange_second[i],pair[i],first_price[i],second_price[i],round(delta[i],2),idt[0]))
     conn = psycopg2.connect(conn_string)
     cur = conn.cursor()
     psycopg2.extras.execute_values(cur, "INSERT INTO pairs(fex, sex, br, fvalue, svalue, delta, idt) values %s", itog)
