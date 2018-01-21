@@ -86,7 +86,7 @@ while True:
        
 
     curr = {'names':names,'wex':wex_data,'cex':cex_data,'pol':poloniex_data,'btf':btf_data,
-           'bnn':bnn_data} # this is dict to work with
+           'bnn':bnn_data,'btt':btt_data} # this is dict to work with
 
     # blocks to write final results
     exchange_first = []   
