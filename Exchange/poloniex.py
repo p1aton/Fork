@@ -5,7 +5,6 @@ import time
 import config
 conn_string = config.conn_string
 polo = Poloniex()
-usdt_usd = 1.01 # парсить актуальную с poloniex
 
 poloniex_tickers = ['BTC_DASH','BTC_LTC','BTC_XRP','BTC_ETH','USDT_ETH','USDT_BTC','USDT_DASH','USDT_LTC','USDT_XRP','USDT_XMR',
             'XMR_LTC','XMR_DASH','BTC_ETC','ETH_ETC','USDT_ETC','BTC_ZEC','ETH_ZEC','USDT_ZEC','BTC_BCH','ETH_BCH','USDT_BCH']
@@ -20,6 +19,8 @@ while True:
         cur.execute("INSERT INTO pol_ts(ts) VALUES (CURRENT_TIMESTAMP);")
         cur.execute("SELECT CURRVAL('pol_ts_id_seq');")
         pol_id = cur.fetchone()
+        cur.execute("SELECT value from usdt order by id desc limit 1;")
+        usdt_usd = float(cur.fetchone()[0])
         conn.commit()
         cur.close()
         conn.close()                
