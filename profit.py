@@ -46,13 +46,13 @@ while True:
     cur.execute("SELECT com_usd FROM usdt_com ORDER BY id DESC LIMIT 1;")
     com_usd = ast.literal_eval(cur.fetchall()[0][0])
     cur.execute("SELECT com_btc FROM usdt_com ORDER BY id DESC LIMIT 1;")
-    com_btc = ast.literal_eval(cur.fetchall()[0][0])
+    com_btc = cur.fetchall()[0][0]
     cur.execute("SELECT com_eth FROM usdt_com ORDER BY id DESC LIMIT 1;")
-    com_eth = ast.literal_eval(cur.fetchall()[0][0])
+    com_eth = cur.fetchall()[0][0]
     cur.execute("SELECT com_eur FROM usdt_com ORDER BY id DESC LIMIT 1;")
-    com_eur = ast.literal_eval(cur.fetchall()[0][0])
+    com_eur = cur.fetchall()[0][0]
     cur.execute("SELECT com_rub FROM usdt_com ORDER BY id DESC LIMIT 1;")
-    com_rub = ast.literal_eval(cur.fetchall()[0][0])
+    com_rub = cur.fetchall()[0][0]
     cur.close()
     conn.close()
 
