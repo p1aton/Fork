@@ -1,6 +1,7 @@
 from operator import itemgetter
 import pandas as pd
 import psycopg2
+from psycopg2 import sql
 import psycopg2.extras
 import time
 import ast
