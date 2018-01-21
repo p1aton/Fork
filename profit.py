@@ -5,24 +5,17 @@ import psycopg2
 import psycopg2.extras
 import time
 conn_string = "dbname='igor' user='igor' password='Chordify2811' host='138.197.179.83'"
-
+exchanges = ['wex', 'cex', 'pol', 'btfnx', 'binance', 'bittrex']
+time.sleep(10)
 # getting last crypto-data from databases
 while True:
     start = time.time()
+    idt = []
     conn = psycopg2.connect(conn_string)
     cur = conn.cursor()
-    cur.execute("SELECT id FROM wex_ts ORDER BY id DESC LIMIT 1;")
-    idw = cur.fetchone()
-    cur.execute("SELECT id FROM cex_ts ORDER BY id DESC LIMIT 1;")
-    idc = cur.fetchone()
-    cur.execute("SELECT id FROM pol_ts ORDER BY id DESC LIMIT 1;")
-    idp = cur.fetchone()
-    cur.execute("SELECT id FROM btfnx_ts ORDER BY id DESC LIMIT 1;")
-    idbtfnx = cur.fetchone()
-    cur.execute("SELECT id FROM binance_ts ORDER BY id DESC LIMIT 1;")
-    idbinance = cur.fetchone()
-    cur.execute("SELECT id FROM bittrex_ts ORDER BY id DESC LIMIT 1;")
-    idbittrex = cur.fetchone()
+    for exchange in exchanges:
+        cur.execute(sql.SQL("SELECT idt FROM {} ORDER BY id DESC LIMIT 1;").format(sql.Identifier(exchange)))
+        idt.append(cur.fetchone())
     cur.execute("""
         SELECT currencies.cur, wex.value, cex.value, pol.value, btfnx.value, binance.value, bittrex.value 
         FROM currencies 
@@ -32,7 +25,7 @@ while True:
         FULL OUTER JOIN (SELECT * FROM btfnx WHERE btfnx.idt=(%s)) btfnx ON currencies.cur=btfnx.br 
         FULL OUTER JOIN (SELECT * FROM binance WHERE binance.idt=(%s)) binance ON currencies.cur=binance.br
         FULL OUTER JOIN (SELECT * FROM bittrex WHERE bittrex.idt=(%s)) bittrex ON currencies.cur=bittrex.br;
-        """, (idw, idc, idp, idbtfnx, idbinance, idbittrex))
+        """, (idt[0], idt[1], idt[2], idt[3], idt[4], idt[5]))
     data = cur.fetchall()
     cur.close()
     conn.close()
