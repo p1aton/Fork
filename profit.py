@@ -76,10 +76,10 @@ while True:
         btf_data.append(i[4])
         bnn_data.append(i[5])
         btt_data.append(i[6])
-        bhb_data.append(i[7])
+       
 
     curr = {'names':names,'wex':wex_data,'cex':cex_data,'pol':poloniex_data,'btf':btf_data,
-           'bnn':bnn_data,'btt':btt_data} # this is dict to work with
+           'bnn':bnn_data} # this is dict to work with
 
     # blocks to write final results
     exchange_first = []   
