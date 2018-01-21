@@ -4,7 +4,6 @@ import config
 import psycopg2
 import psycopg2.extras
 conn_string = config.conn_string
-usdt_usd = 1.01
 
 while True:
     try:
@@ -26,6 +25,8 @@ while True:
         cur.execute("INSERT INTO bittrex_ts(ts) VALUES (CURRENT_TIMESTAMP);")
         cur.execute("SELECT CURRVAL('bittrex_ts_id_seq');")
         bittrex_id = cur.fetchone()
+        cur.execute("SELECT value from usdt order by id desc limit 1;")
+        usdt_usd = float(cur.fetchone()[0])
         conn.commit()
         cur.close()
         conn.close()
