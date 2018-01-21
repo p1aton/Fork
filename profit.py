@@ -4,7 +4,7 @@ import psycopg2
 from psycopg2 import sql
 import psycopg2.extras
 import time
-import ast
+import yaml
 conn_string = "dbname='igor' user='igor' password='Chordify2811' host='138.197.179.83'"
 exchanges = ['wex', 'cex', 'pol', 'btfnx', 'binance', 'bittrex']
 time.sleep(10)
@@ -44,15 +44,15 @@ while True:
     conn = psycopg2.connect(conn_string)
     cur = conn.cursor()
     cur.execute("SELECT com_usd FROM usdt_com ORDER BY id DESC LIMIT 1;")
-    com_usd = ast.literal_eval(cur.fetchall()[0][0])
+    com_usd = yaml.load(cur.fetchall()[0][0])
     cur.execute("SELECT com_btc FROM usdt_com ORDER BY id DESC LIMIT 1;")
-    com_btc = cur.fetchall()[0][0]
+    com_btc = yaml.load(cur.fetchall()[0][0])
     cur.execute("SELECT com_eth FROM usdt_com ORDER BY id DESC LIMIT 1;")
-    com_eth = cur.fetchall()[0][0]
+    com_eth = yaml.load(cur.fetchall()[0][0])
     cur.execute("SELECT com_eur FROM usdt_com ORDER BY id DESC LIMIT 1;")
-    com_eur = cur.fetchall()[0][0]
+    com_eur = yaml.load(cur.fetchall()[0][0])
     cur.execute("SELECT com_rub FROM usdt_com ORDER BY id DESC LIMIT 1;")
-    com_rub = cur.fetchall()[0][0]
+    com_rub = yaml.load(cur.fetchall()[0][0])
     cur.close()
     conn.close()
 
