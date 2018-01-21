@@ -42,7 +42,7 @@ while True:
         
         cex = []
         for i in range(0,len(cex_nums)):
-            cex.append((cex_nums[i],cex_values[i], cex_id[0]))
+            cex.append((cex_nums[i],cex_values[i], cex_id[0],cex_answer))
     
     except Exception:
         cex_answer = 0

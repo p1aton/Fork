@@ -34,9 +34,9 @@ while True:
         poloniex = []
         for i in range(0,len(poloniex_words)):
             if poloniex_tickers[i][0:4] == 'USDT':
-                poloniex.append((poloniex_words[i],poloniex_last_price[i]*usdt_usd, pol_id[0]))
+                poloniex.append((poloniex_words[i],poloniex_last_price[i]*usdt_usd, pol_id[0],poloniex_answer))
             else:
-                poloniex.append((poloniex_words[i],poloniex_last_price[i], pol_id[0]))  
+                poloniex.append((poloniex_words[i],poloniex_last_price[i], pol_id[0],poloniex_answer))  
 
     except Exception:
         poloniex_answer = 0

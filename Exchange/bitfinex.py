@@ -42,9 +42,10 @@ while True:
             bitfinex_values.append(wss.tickers(i).get(block=False)[0][0][6])
         
         bitfinex = []
+		bitfinex_answer = 1
         for i in range(0,len(bitfinex_nums)):
-            bitfinex.append((bitfinex_nums[i],bitfinex_values[i], btfnx_id[0],))
-        bitfinex_answer = 1
+            bitfinex.append((bitfinex_nums[i],bitfinex_values[i], btfnx_id[0],bitfinex_answer,))
+        
 
     except queue.Empty: 
     

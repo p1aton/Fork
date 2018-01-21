@@ -37,15 +37,15 @@ while True:
             bittrex_p.append(i['Last'])
 
         bittrex_price = dict(zip(bittrex_s,bittrex_p))
-
+		bittrex_answer = 1
         for i in bittrex_pairs:
             bittrex_values.append(bittrex_price[i])
         for i in range(len(bittrex_nums)):
             if bittrex_nums[i][4:7] == 'usd':
-                bittrex.append((bittrex_nums[i],float(bittrex_values[i]) * usdt_usd, bittrex_id[0],))
+                bittrex.append((bittrex_nums[i],float(bittrex_values[i]) * usdt_usd, bittrex_id[0],bittrex_answer,))
             else:  
-                bittrex.append((bittrex_nums[i],bittrex_values[i], bittrex_id[0],))
-        bittrex_answer = 1
+                bittrex.append((bittrex_nums[i],bittrex_values[i], bittrex_id[0],bittrex_answer,))
+        
     except Exception:
         bittrex_answer = 0
     

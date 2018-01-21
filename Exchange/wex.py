@@ -30,7 +30,7 @@ while True:
                 words[i] = words[i][0:4] + 'rub' 
         wex = []
         for i in range(0,len(words)):
-            wex.append((words[i], d[i], wex_id[0],))
+            wex.append((words[i], d[i], wex_id[0],wex_answer))
     except requests.exceptions.Timeout:
         wex_answer = 0
     finally:
