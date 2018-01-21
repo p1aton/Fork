@@ -1,6 +1,5 @@
 from operator import itemgetter
 import pandas as pd
-import crypto_parsing
 import psycopg2
 import psycopg2.extras
 import time
@@ -40,7 +39,20 @@ while True:
             'btt':{'btc':0, 'xrp':0,'dsh':0, 'eth':0, 'zec':0,'ltc':0,'xmr':0,'etc':0,'neo':0},
             'bhb':{'krw':1000, 'btc': 0.003, 'eth':0.01, 'dsh': 0.01, 'ltc':0.01, 'etc': 0.01, 'xrp': 1, 'bch':0.005, 'xmr':0.05, 'zec':0.001}}
 
-    com_usd,com_btc,com_eth,com_eur,com_rub = crypto_parsing.get_all_comissions()
+    conn = psycopg2.connect(conn_string)
+    cur = conn.cursor()
+    cur.execute("SELECT com_usd FROM usdt_com ORDER BY id DESC LIMIT 1;")
+    com_usd = cur.fetchall()
+    cur.execute("SELECT com_btc FROM usdt_com ORDER BY id DESC LIMIT 1;")
+    com_btc = cur.fetchall()
+    cur.execute("SELECT com_eth FROM usdt_com ORDER BY id DESC LIMIT 1;")
+    com_eth = cur.fetchall()
+    cur.execute("SELECT com_eur FROM usdt_com ORDER BY id DESC LIMIT 1;")
+    com_eur = cur.fetchall()
+    cur.execute("SELECT com_rub FROM usdt_com ORDER BY id DESC LIMIT 1;")
+    com_rub = cur.fetchall()
+    cur.close()
+    conn.close()
 
     blockchain_com = {'usd':com_usd,
                     'btc':com_btc,
