@@ -38,12 +38,15 @@ def full_cryptocurrs_data(type_):
         r33 = re.findall(r"\[new Date(.*?)\]",str(r22))
         r44 = r33[-1].replace('"', '').replace('/', '-').replace('(', '').replace(')', '').replace('null', 'NaN').split(',')[1:]
         r5 = r4 + r44
+        r6 = []
+        for i in r5:
+            r6.append(float(i))
         crypto_currs_answer = 1
     except:
         crypto_currs_answer = 0
     
     finally:
-        data = dict(zip(crypts,r5))
+        data = dict(zip(crypts,r6))
         data['neo'] = 0
     return data
 
