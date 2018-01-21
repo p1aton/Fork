@@ -41,13 +41,14 @@ while True:
                 cex_nums[i] = 'dsh'+b
         
         cex = []
-        for i in range(0,len(cex_nums)):
-            cex.append((cex_nums[i],cex_values[i], cex_id[0],cex_answer))
+        
     
     except Exception:
         cex_answer = 0
 
     finally:
+		for i in range(0,len(cex_nums)):
+            cex.append((cex_nums[i],cex_values[i], cex_id[0],cex_answer))
         
         conn = psycopg2.connect(conn_string)
         cur = conn.cursor()

@@ -43,8 +43,7 @@ while True:
         
         bitfinex = []
 		bitfinex_answer = 1
-        for i in range(0,len(bitfinex_nums)):
-            bitfinex.append((bitfinex_nums[i],bitfinex_values[i], btfnx_id[0],bitfinex_answer,))
+      
         
 
     except queue.Empty: 
@@ -55,6 +54,8 @@ while True:
         bitfinex_answer = 0
     
     finally:
+		for i in range(0,len(bitfinex_nums)):
+            bitfinex.append((bitfinex_nums[i],bitfinex_values[i], btfnx_id[0],bitfinex_answer,))
         conn = psycopg2.connect(conn_string)
         cur = conn.cursor()
         psycopg2.extras.execute_values(cur, "INSERT INTO btfnx(br, value, idt) values %s", bitfinex)

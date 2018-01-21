@@ -44,14 +44,15 @@ while True:
         
 		binance_answer = 1
         
-        for i in range(0,len(binance_nums)):
-            binance.append((binance_nums[i], binance_values[i], binance_id[0],binance_answer)) # add here ind[0]
+      
         
         
     except Exception:
         binance_answer = 0
     
     finally:
+		for i in range(0,len(binance_nums)):
+            binance.append((binance_nums[i], binance_values[i], binance_id[0],binance_answer))
         conn = psycopg2.connect(conn_string)
         cur = conn.cursor()
         psycopg2.extras.execute_values(cur, "INSERT INTO binance(br, value, idt) values %s", binance)
