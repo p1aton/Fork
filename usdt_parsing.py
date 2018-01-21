@@ -8,8 +8,10 @@ while True:
     start = time.time()
     try:
         r = requests.get('https://api.coinmarketcap.com/v1/ticker/',timeout=3).json()
+        for i in range(len(r)):
+            if r[i]['symbol'] == "USDT":
+                usdtd_usd = r[i]['price_usd']
         com_usd,com_btc,com_eth,com_eur,com_rub = crypto_parsing.get_all_comissions()
-        usdt_usd = r[22]['price_usd']
         usdt_answer = 1
         com_answer = 1
         
