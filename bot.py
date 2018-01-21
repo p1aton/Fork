@@ -2,91 +2,108 @@ import telebot
 from telebot import types
 import requests
 import pandas as pd
+import logging
+import psycopg2
+import cherrypy
 
 
-token = '528314642:AAH1NhBuOIpPcMFI-0CrglGt9q0E6s5PRGM'
-
-
+token = '513646383:AAF7ZrrSmwjH9SA2F8o5cH4z7iwWgXlhnEo'
 bot = telebot.TeleBot(token)
 
 
 @bot.message_handler(commands=['start'])
 def start(m):
     keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True)
-    keyboard.add(*[types.KeyboardButton(name) for name in ['Обновить данные', 'Список бирж']])
-    msg = bot.send_message(m.chat.id, 'Добро пожаловать', reply_markup=keyboard)
+    keyboard.add(*[types.KeyboardButton(name) for name in ['Обновить данные (лучшие)','Обновить данные (все)', 'Список бирж']])
+    msg = bot.send_message(m.chat.id, 'Добро пожаловать! \nБот ищет возможности для арбитратража криптовалютами с учетом комиссий. \n*Важно* : бот не учитывает комиссии на вывод средств в фиат',parse_mode='Markdown', reply_markup=keyboard)
     bot.register_next_step_handler(msg, name)
 
 def name(m):
-    if m.text == 'Обновить данные':
-        wex_data = requests.get(
-            'https://wex.nz/api/3/ticker/btc_usd-btc_eur-dsh_btc-dsh_usd-dsh_eur-eth_usd-eth_btc-eth_eur-bch_usd-bch_eur-bch_btc-zec_btc-zec_usd')
-        cex_data = requests.get('https://cex.io/api/tickers/BTC/USD')
-        cex_data1 = requests.get('https://cex.io/api/tickers/BTC/EUR')
+    if m.text == 'Обновить данные (лучшие)':
 
-        wex_bch_btc = wex_data.json()['bch_btc']['last']
-        wex_bch_eur = wex_data.json()['bch_eur']['last']
-        wex_bch_usd = wex_data.json()['bch_usd']['last']
-        wex_btc_eur = wex_data.json()['btc_eur']['last']
-        wex_btc_usd = wex_data.json()['btc_usd']['last']
-        wex_dsh_btc = wex_data.json()['dsh_btc']['last']
-        wex_dsh_eur = wex_data.json()['dsh_eur']['last']
-        wex_dsh_usd = wex_data.json()['dsh_usd']['last']
-        wex_eth_btc = wex_data.json()['eth_btc']['last']
-        wex_eth_eur = wex_data.json()['eth_eur']['last']
-        wex_eth_usd = wex_data.json()['eth_usd']['last']
-        wex_zec_btc = wex_data.json()['zec_btc']['last']
-        wex_zec_usd = wex_data.json()['zec_usd']['last']
+        conn_string = "dbname='igor' user='bot' password='Chordify2811' host='138.197.179.83'"
+        conn = psycopg2.connect(conn_string)
+        cur = conn.cursor()
+        cur.execute("SELECT id FROM pairs_ts ORDER BY id DESC LIMIT 1;")
+        idt = cur.fetchone()
+        cur.execute("SELECT fex, sex, br, fvalue, svalue, delta FROM pairs WHERE idt=%s", idt)
+        data = cur.fetchall()
+        cur.close()
+        conn.close()
 
-        cex_bch_btc = float(cex_data.json()['data'][8]['last'])
-        cex_bch_eur = float(cex_data1.json()['data'][2]['last'])
-        cex_bch_usd = float(cex_data.json()['data'][2]['last'])
-        cex_btc_eur = float(cex_data1.json()['data'][0]['last'])
-        cex_btc_usd = float(cex_data.json()['data'][0]['last'])
-        cex_dsh_btc = float(cex_data.json()['data'][10]['last'])
-        cex_dsh_eur = float(cex_data1.json()['data'][4]['last'])
-        cex_dsh_usd = float(cex_data.json()['data'][4]['last'])
-        cex_eth_btc = float(cex_data.json()['data'][7]['last'])
-        cex_eth_eur = float(cex_data1.json()['data'][1]['last'])
-        cex_eth_usd = float(cex_data.json()['data'][1]['last'])
-        cex_zec_btc = float(cex_data.json()['data'][12]['last'])
-        cex_zec_usd = float(cex_data.json()['data'][6]['last'])
+        exchange_first = []
+        exchange_second = []
+        pair = []
+        first_price = []
+        second_price = []
+        delta = []
 
-        words = ['bch_bts', 'bch_eur', 'bch_usd', 'btc_eur', 'btc_usd', 'dsh_btc', 'dsh_eur', 'dsh_usd', 'eth_btc',
-                 'eth_eur', 'eth_usd',
-                 'zec_btc', 'zec_usd']
+        for i in data:
+            exchange_first.append(i[0])
+            exchange_second.append(i[1])
+            pair.append(i[2])
+            first_price.append(i[3])
+            second_price.append(i[4])
+            delta.append(i[5])
+        currencies = {'exchange1': exchange_first, 'exchange2': exchange_second, 'pair': pair,
+                      'first_price': first_price, 'second_price': second_price, 'delta': delta}
+        currencies = pd.DataFrame(currencies)
+        cols = ['exchange1', 'exchange2', 'pair', 'delta']
+        currencies = currencies[cols]
 
-        bch_btc = round((cex_bch_btc / wex_bch_btc - 1) * 100, 2)
-        bch_eur = round((cex_bch_eur / wex_bch_eur - 1) * 100, 2)
-        bch_usd = round((cex_bch_usd / wex_bch_usd - 1) * 100, 2)
-        btс_eur = round((cex_btc_eur / wex_btc_eur - 1) * 100, 2)
-        btс_usd = round((cex_btc_usd / wex_btc_usd - 1) * 100, 2)
-        dsh_btc = round((cex_dsh_btc / wex_dsh_btc - 1) * 100, 2)
-        dsh_eur = round((cex_dsh_eur / wex_dsh_eur - 1) * 100, 2)
-        dsh_usd = round((cex_dsh_usd / wex_dsh_usd - 1) * 100, 2)
-        eth_btc = round((cex_eth_btc / wex_eth_btc - 1) * 100, 2)
-        eth_eur = round((cex_eth_eur / wex_eth_eur - 1) * 100, 2)
-        eth_usd = round((cex_eth_usd / wex_eth_usd - 1) * 100, 2)
-        zec_btc = round((cex_zec_btc / wex_zec_btc - 1) * 100, 2)
-        zec_usd = round((cex_zec_usd / wex_zec_usd - 1) * 100, 2)
+        msg = bot.send_message(m.chat.id, '{}'.format(currencies.sort_values(by='delta', ascending=False).head(10).to_string(index=False)))
+        cur.close()
+        conn.close()
 
-        nums = [bch_btc, bch_eur, bch_usd, btс_eur, btс_usd, dsh_btc, dsh_eur, dsh_usd, eth_btc,eth_eur, eth_usd, zec_btc,
-                zec_usd]
-        curr = pd.DataFrame({'Currency': words, 'Delta in %': nums})
-
-        msg = bot.send_message(m.chat.id,'{}'.format(curr.sort_values(by='Delta in %',ascending=False).to_string(index=False)))
         bot.register_next_step_handler(msg, name)
+
+    if m.text == 'Обновить данные (все)':
+
+        conn_string = "dbname='igor' user='igor' password='Chordify2811' host='138.197.179.83'"
+        conn = psycopg2.connect(conn_string)
+        cur = conn.cursor()
+        cur.execute("SELECT id FROM pairs_ts ORDER BY id DESC LIMIT 1;")
+        idt = cur.fetchone()
+        cur.execute("SELECT fex, sex, br, fvalue, svalue, delta FROM pairs WHERE idt=%s", idt)
+        data = cur.fetchall()
+        cur.close()
+        conn.close()
+
+        exchange_first = []
+        exchange_second = []
+        pair = []
+        first_price = []
+        second_price = []
+        delta = []
+
+        for i in data:
+            exchange_first.append(i[0])
+            exchange_second.append(i[1])
+            pair.append(i[2])
+            first_price.append(i[3])
+            second_price.append(i[4])
+            delta.append(i[5])
+        currencies = {'exch1': exchange_first, 'exch2': exchange_second, 'pair': pair,
+                      'first_price': first_price, 'second_price': second_price, 'delta': delta}
+        currencies = pd.DataFrame(currencies)
+        cols = ['exch1', 'exch2', 'pair', 'delta']
+        currencies = currencies[cols]
+
+        msg = bot.send_message(m.chat.id, '{}'.format(currencies.sort_values(by='delta', ascending=False).head(50).to_string(index=False)))
+        cur.close()
+        conn.close()
+
+        bot.register_next_step_handler(msg, name)
+
     if m.text == 'Список бирж':
-        msg = bot.send_message(m.chat.id, 'Бот работает с биржами *wex* и *cex*',parse_mode='Markdown')
+        msg = bot.send_message(m.chat.id, 'Binance\nBitfinex\nBittrex\nCex\nPoloniex\nWex',parse_mode='Markdown')
+
         bot.register_next_step_handler(msg, name)
 
 
-'''
-@bot.message_handler(content_types=["text"])
-def repeat_all_messages(message): # Название функции не играет никакой роли, в принципе
-    bot.send_message(message.chat.id, message.text)
-'''
 
 if __name__ == '__main__':
+    logging.basicConfig(format=u'%(levelname)-8s [%(asctime)s] %(message)s', level=logging.DEBUG, filename=u'mylog.log')
     bot.polling(none_stop=True)
+
 
