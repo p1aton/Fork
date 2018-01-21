@@ -1,5 +1,7 @@
 import requests
 import time
+import psycopg2
+conn_string = "dbname='igor'"
 
 while True:
     start = time.time()
@@ -14,7 +16,11 @@ while True:
         usdt_answer = 0
     
     finally:
-    
-        #write to database variable usdt_usd
-        time.sleep(10 - (time.time() - start))
+        conn = psycopg2.connect(conn_string)
+        cur = conn.cursor()
+        cur.execute("INSERT INTO usdt(value, ts) VALUES (%s, CURRENT_TIMESTAMP);", [usdt_usd])
+        conn.commit()
+        cur.close()
+        conn.close()
+    time.sleep(10 - (time.time() - start))
         
