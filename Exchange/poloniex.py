@@ -19,7 +19,7 @@ while True:
         cur.execute("INSERT INTO pol_ts(ts) VALUES (CURRENT_TIMESTAMP);")
         cur.execute("SELECT CURRVAL('pol_ts_id_seq');")
         pol_id = cur.fetchone()
-        cur.execute("SELECT value from usdt order by id desc limit 1;")
+        cur.execute("SELECT usdt FROM usdt_com ORDER BY id DESC LIMIT 1;")
         usdt_usd = float(cur.fetchone()[0])
         conn.commit()
         cur.close()
