@@ -3,6 +3,7 @@ import pandas as pd
 import psycopg2
 import psycopg2.extras
 import time
+import ast
 conn_string = "dbname='igor' user='igor' password='Chordify2811' host='138.197.179.83'"
 exchanges = ['wex', 'cex', 'pol', 'btfnx', 'binance', 'bittrex']
 time.sleep(10)
@@ -42,15 +43,15 @@ while True:
     conn = psycopg2.connect(conn_string)
     cur = conn.cursor()
     cur.execute("SELECT com_usd FROM usdt_com ORDER BY id DESC LIMIT 1;")
-    com_usd = cur.fetchall()
+    com_usd = ast.literal_eval(cur.fetchall()[0][0])
     cur.execute("SELECT com_btc FROM usdt_com ORDER BY id DESC LIMIT 1;")
-    com_btc = cur.fetchall()
+    com_btc = ast.literal_eval(cur.fetchall()[0][0])
     cur.execute("SELECT com_eth FROM usdt_com ORDER BY id DESC LIMIT 1;")
-    com_eth = cur.fetchall()
+    com_eth = ast.literal_eval(cur.fetchall()[0][0])
     cur.execute("SELECT com_eur FROM usdt_com ORDER BY id DESC LIMIT 1;")
-    com_eur = cur.fetchall()
+    com_eur = ast.literal_eval(cur.fetchall()[0][0])
     cur.execute("SELECT com_rub FROM usdt_com ORDER BY id DESC LIMIT 1;")
-    com_rub = cur.fetchall()
+    com_rub = ast.literal_eval(cur.fetchall()[0][0])
     cur.close()
     conn.close()
 
