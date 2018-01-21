@@ -40,19 +40,21 @@ while True:
                 b = cex_nums[i][4:8]
                 cex_nums[i] = 'dsh'+b
         
-        cex = []
+        
         
     
     except Exception:
         cex_answer = 0
 
     finally:
-		for i in range(0,len(cex_nums)):
+        
+        cex = []
+        for i in range(0,len(cex_nums)):
             cex.append((cex_nums[i],cex_values[i], cex_id[0],cex_answer))
         
         conn = psycopg2.connect(conn_string)
         cur = conn.cursor()
-        psycopg2.extras.execute_values(cur, "INSERT INTO cex(br, value, idt) values %s", cex)
+        psycopg2.extras.execute_values(cur, "INSERT INTO cex(br, value, idt, answer) values %s", cex)
         conn.commit()
         cur.close()
         conn.close()

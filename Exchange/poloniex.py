@@ -31,14 +31,16 @@ while True:
         for i in poloniex_tickers:
             poloniex_last_price.append(poloniex_data[i]['last'])        
         poloniex_answer = 1
-        poloniex = []
+        
      
 
     except Exception:
         poloniex_answer = 0
     
     finally:
-		for i in range(0,len(poloniex_words)):
+        
+        poloniex = []
+        for i in range(0,len(poloniex_words)):
             if poloniex_tickers[i][0:4] == 'USDT':
                 poloniex.append((poloniex_words[i],poloniex_last_price[i]*usdt_usd, pol_id[0],poloniex_answer))
             else:
@@ -46,7 +48,7 @@ while True:
       
         conn = psycopg2.connect(conn_string)
         cur = conn.cursor()
-        psycopg2.extras.execute_values(cur, "INSERT INTO pol(br, value, idt) values %s", poloniex)
+        psycopg2.extras.execute_values(cur, "INSERT INTO pol(br, value, idt, answer) values %s", poloniex)
         conn.commit()
         cur.close()
         conn.close()    

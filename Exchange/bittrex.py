@@ -8,10 +8,7 @@ conn_string = config.conn_string
 while True:
     try:
         start = time.time()
-        bittrex_s = []
-        bittrex_p = []
-        bittrex_values = []
-        bittrex = []
+       
         
         # 2 следующие переменные можно же вынести в глобальные? вроде бы в прошлый раз Игорь говорил, что нет, но я забыл почему
         bittrex_pairs = ['BTC-DASH','BTC-ETC','BTC-ETH','BTC-LTC','BTC-NEO','BTC-XMR','BTC-XRP','BTC-ZEC','ETH-DASH','ETH-LTC',
@@ -31,29 +28,35 @@ while True:
         cur.close()
         conn.close()
         data = requests.get('https://bittrex.com/api/v1.1/public/getmarketsummaries', timeout = 3).json()
+        
+        bittrex_s = []
+        bittrex_p = []
+        bittrex_values = []
 
         for i in data['result']:
             bittrex_s.append(i['MarketName'])
             bittrex_p.append(i['Last'])
 
         bittrex_price = dict(zip(bittrex_s,bittrex_p))
-		bittrex_answer = 1
+        
         for i in bittrex_pairs:
             bittrex_values.append(bittrex_price[i])
-      
+        
+        bittrex_answer = 1
         
     except Exception:
         bittrex_answer = 0
     
     finally:
-		for i in range(len(bittrex_nums)):
+        bittrex = []
+        for i in range(len(bittrex_nums)):
             if bittrex_nums[i][4:7] == 'usd':
                 bittrex.append((bittrex_nums[i],float(bittrex_values[i]) * usdt_usd, bittrex_id[0],bittrex_answer,))
             else:  
                 bittrex.append((bittrex_nums[i],bittrex_values[i], bittrex_id[0],bittrex_answer,))
         conn = psycopg2.connect(conn_string)
         cur = conn.cursor()
-        psycopg2.extras.execute_values(cur, "INSERT INTO bittrex(br, value, idt) values %s", bittrex)
+        psycopg2.extras.execute_values(cur, "INSERT INTO bittrex(br, value, idt, answer) values %s", bittrex)
         conn.commit()
         cur.close()
         conn.close()

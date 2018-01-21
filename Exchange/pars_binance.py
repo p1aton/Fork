@@ -26,7 +26,7 @@ while True:
         cur.close()
         conn.close()
         prices = client.get_all_tickers()
-        binance = []
+    
         binance_values = []
         binance_p = []
         binance_s = []
@@ -42,7 +42,7 @@ while True:
             else:
                 binance_values.append(binance_i[binance_pairs[i]])
         
-		binance_answer = 1
+        binance_answer = 1
         
       
         
@@ -51,11 +51,12 @@ while True:
         binance_answer = 0
     
     finally:
-		for i in range(0,len(binance_nums)):
+        binance = []
+        for i in range(0,len(binance_nums)):
             binance.append((binance_nums[i], binance_values[i], binance_id[0],binance_answer))
         conn = psycopg2.connect(conn_string)
         cur = conn.cursor()
-        psycopg2.extras.execute_values(cur, "INSERT INTO binance(br, value, idt) values %s", binance)
+        psycopg2.extras.execute_values(cur, "INSERT INTO binance(br, value, idt, answer) values %s", binance)
         conn.commit()
         cur.close()
         conn.close()
