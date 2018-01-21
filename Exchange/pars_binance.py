@@ -11,7 +11,6 @@ binance_pairs = ['ETHBTC','LTCBTC','NEOBTC','BTCUSDT','ETHUSDT','ZECBTC','ZECETH
                 'XRPETH','XMRBTC','XMRETH','LTCETH','LTCUSDT']
 binance_nums = ['eth_btc','ltc_btc','neo_btc','btc_usd','eth_usd','zec_btc','zec_eth','etc_eth','etc_btc','dsh_btc','dsh_eth',
                 'xrp_btc','xrp_eth','xmr_btc','xmr_eth','ltc_eth','ltc_usd']
-usdt_usd = 1.01
 
 while True:
     start = time.time()
@@ -21,6 +20,8 @@ while True:
         cur.execute("INSERT INTO binance_ts(ts) VALUES (CURRENT_TIMESTAMP);")
         cur.execute("SELECT CURRVAL('binance_ts_id_seq');")
         binance_id = cur.fetchone()
+        cur.execute("SELECT value from usdt order by id desc limit 1;")
+        usdt_usd = float(cur.fetchone()[0])
         conn.commit()
         cur.close()
         conn.close()
