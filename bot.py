@@ -21,14 +21,14 @@ def start(m):
 def name(m):
     if m.text == 'Обновить данные (лучшие)':
 
-	conn = psycopg2.connect(conn_string)
-	cur = conn.cursor()
-	cur.execute("SELECT id FROM pairs_ts ORDER BY id DESC LIMIT 1;")
-	idt = cur.fetchone()
-	cur.execute("SELECT fex, sex, br, delta FROM pairs WHERE idt=%s AND delta > 1 ORDER BY delta DESC LIMIT 10", idt) #Обновить данные (лучшие)
-	data=cur.fetchall()
-	cur.close()
-	conn.close()
+        conn = psycopg2.connect(conn_string)
+        cur = conn.cursor()
+        cur.execute("SELECT id FROM pairs_ts ORDER BY id DESC LIMIT 1;")
+        idt = cur.fetchone()
+        cur.execute("SELECT fex, sex, br, delta FROM pairs WHERE idt=%s AND delta > 1 ORDER BY delta DESC LIMIT 10", idt) #Обновить данные (лучшие)
+        data=cur.fetchall()
+        cur.close()
+        conn.close()
 
         exchange_first = []
         exchange_second = []
@@ -58,14 +58,14 @@ def name(m):
 
     if m.text == 'Обновить данные (все)':
 
-	conn = psycopg2.connect(conn_string)
-	cur = conn.cursor()
-	cur.execute("SELECT id FROM pairs_ts ORDER BY id DESC LIMIT 1;")
-	idt = cur.fetchone()
-	cur.execute("SELECT fex, sex, br, delta FROM pairs WHERE idt=%s AND delta > 1 ORDER BY delta DESC", idt) # Обновить данные (все)
-	data=cur.fetchall()
-	cur.close()
-	conn.close()
+        conn = psycopg2.connect(conn_string)
+        cur = conn.cursor()
+        cur.execute("SELECT id FROM pairs_ts ORDER BY id DESC LIMIT 1;")
+        idt = cur.fetchone()
+        cur.execute("SELECT fex, sex, br, delta FROM pairs WHERE idt=%s AND delta > 1 ORDER BY delta DESC", idt) # Обновить данные (все)
+        data=cur.fetchall()
+        cur.close()
+        conn.close()
 
         exchange_first = []
         exchange_second = []
