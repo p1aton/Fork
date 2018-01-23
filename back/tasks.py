@@ -7,7 +7,7 @@ import time
 app = Celery('proj', broker='amqp://')
 app.conf.beat_schedule = {
                             'add-every-10-seconds': {
-                            'task:' 'task.add',
+                            'task': 'task.add',
                             'schedule': datetime.timedelta(seconds=10),
                             'args': (2, 2)
                             },
