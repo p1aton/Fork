@@ -1,9 +1,10 @@
-from __future__ import absolute_import, unicode_literals
-from .celery import app
+from celery import Celery
 import psycopg2
 import requests
 import psycopg2.extras
 import time
+
+app = Celery('proj', broker='amqp://')
 
 @app.task
 def cex_parse():
