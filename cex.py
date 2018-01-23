@@ -60,4 +60,3 @@ def cex_parse():
         conn.commit()
         cur.close()
         conn.close()
-        time.sleep(10-(time.time() - start))
