@@ -1,13 +1,11 @@
 from celery import Celery
+import psycopg2
+import requests
+import psycopg2.extras
+import time
 
 app = Celery('wex', broker = 'amqp://localhost')
 @app.task
-
-import psycopg2
-import requests
-import psycopg2
-import psycopg2.extras
-import time
 
 def wex_parse():
     conn_string = "dbname='igor' user='server' password='Chordify2811' host='138.197.179.83'"
