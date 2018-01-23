@@ -5,7 +5,6 @@ import pandas as pd
 import logging
 import psycopg2
 import cherrypy
-conn_string = "dbname='igor' user='bot' password='Chordify2811' host='138.197.179.83'"
 
 token = '513646383:AAF7ZrrSmwjH9SA2F8o5cH4z7iwWgXlhnEo'
 bot = telebot.TeleBot(token)
@@ -21,7 +20,7 @@ def start(m):
 def name(m):
     if m.text == 'Обновить данные (лучшие)':
 
-        conn_string = "dbname='igor' user='bot' password='Chordify2811' host='138.197.179.83'"
+        conn_string = "dbname='igor'"
         conn = psycopg2.connect(conn_string)
         cur = conn.cursor()
         cur.execute("SELECT id FROM pairs_ts ORDER BY id DESC LIMIT 1;")
@@ -50,7 +49,8 @@ def name(m):
         bot.register_next_step_handler(msg, name)
 
     if m.text == 'Обновить данные (все)':
-
+        
+        conn_string = "dbname='igor'"
         conn = psycopg2.connect(conn_string)
         cur = conn.cursor()
         cur.execute("SELECT id FROM pairs_ts ORDER BY id DESC LIMIT 1;")
