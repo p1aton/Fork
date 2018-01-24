@@ -12,4 +12,16 @@ beat_schedule = {
 	'task': 'tasks.cex_parse',
 	'schedule': timedelta(seconds=10),
     },
+    'pol-parse': {
+	'task': 'tasks.pol_parse',
+	'schedule': timedelta(seconds=10),
+    },
+    'bnn-parse': {
+	'task': 'tasks.bnn_parse',
+	'schedule': timedelta(seconds=10),
+    },
+    'btx-parse': {
+	'task': 'tasks.btx_parse',
+	'schedule': timedelta(seconds=10),
+    },
 }
