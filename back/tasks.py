@@ -1,20 +1,9 @@
-from celery import Celery
+from celery.task import task
 import psycopg2
 import requests
 import psycopg2.extras
-import time
 
-app = Celery('proj', broker='amqp://')
-app.conf.beat_schedule = {
-                            'add-every-10-seconds': {
-                            'task:' 'task.add',
-                            'schedule': datetime.timedelta(seconds=10),
-                            'args': (2, 2)
-                            },
-}
-
-
-@app.task
+@task
 def cex_parse():
     conn_string = "dbname='igor' user='server' password='Chordify2811' host='138.197.179.83'"
     try:
@@ -63,7 +52,7 @@ def cex_parse():
         
         
         
-@app.task
+@task
 def wex_parse():
     conn_string = "dbname='igor' user='server' password='Chordify2811' host='138.197.179.83'"
     try:
