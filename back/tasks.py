@@ -7,6 +7,30 @@ import binance
 from binance.client import Client
 
 @task
+def usdt_parse():
+    try:
+        conn_string = "dbname='igor'"
+        r = requests.get('https://api.coinmarketcap.com/v1/ticker/',timeout=3).json()
+        for i in range(len(r)):
+            if r[i]['symbol'] == "USDT":
+                usdt_usd = r[i]['price_usd']
+        com_usd,com_btc,com_eth,com_eur,com_rub = crypto_parsing.get_all_comissions()
+        usdt_answer = 1
+        com_answer = 1
+
+    except Exception:
+        usdt_answer = 0
+        com_answer = 0
+    finally:
+        conn = psycopg2.connect(conn_string)
+        cur = conn.cursor()
+        cur.execute("""INSERT INTO usdt_com(usdt, com_usd, com_btc, com_eth, com_eur, com_rub, ts)
+                    VALUES (%s, %s, %s, %s, %s, %s, CURRENT_TIMESTAMP);""", (float(usdt_usd), str(com_usd), str(com_btc), str(com_eth), str(com_eur), str(com_rub)))
+        conn.commit()
+        cur.close()
+        conn.close()
+
+@task
 def wex_parse():
     conn_string = "dbname='igor'"
     try:
