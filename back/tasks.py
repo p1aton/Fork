@@ -241,7 +241,7 @@ def btx_parse():
         cur.close()
         conn.close()
 
-        @task
+@task
 def bnn_parse():
     conn_string = "dbname='igor'"
     client = Client('dtiWWNHXnLzD2RNe2QivRsRnrUoKWZksOgl9MwZEGuTFdyr3X2hnLZgzC5OgFp93', 
