@@ -6,10 +6,10 @@ import logging
 import psycopg2
 import cherrypy
 
-token = '513646383:AAF7ZrrSmwjH9SA2F8o5cH4z7iwWgXlhnEo'
-WEBHOOK_HOST = '138.197.179.83'
+token = 'token'
+WEBHOOK_HOST = 'ip'
 WEBHOOK_PORT = 8443  # 443, 80, 88 или 8443 (порт должен быть открыт!)
-WEBHOOK_LISTEN = '138.197.179.83'  # На некоторых серверах придется указывать такой же IP, что и выше
+WEBHOOK_LISTEN = 'ip'  # На некоторых серверах придется указывать такой же IP, что и выше
 
 WEBHOOK_SSL_CERT = '../webhook_cert.pem'  # Путь к сертификату
 WEBHOOK_SSL_PRIV = '../webhook_pkey.pem'  # Путь к приватному ключу
@@ -43,7 +43,7 @@ def start(m):
 def name(m):
     if m.text == 'Обновить данные (лучшие)':
 
-        conn_string = "dbname='igor'"
+        conn_string = "dbname='ilya'"
         conn = psycopg2.connect(conn_string)
         cur = conn.cursor()
         cur.execute("SELECT id FROM pairs_ts ORDER BY id DESC LIMIT 1;")
@@ -73,7 +73,7 @@ def name(m):
 
     if m.text == 'Обновить данные (все)':
         
-        conn_string = "dbname='igor'"
+        conn_string = "dbname='ilya'"
         conn = psycopg2.connect(conn_string)
         cur = conn.cursor()
         cur.execute("SELECT id FROM pairs_ts ORDER BY id DESC LIMIT 1;")
