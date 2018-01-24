@@ -1,0 +1,12 @@
+celery
+psycopg2
+requests
+poloniex
+binance
+yaml
+operator
+pandas
+telebot
+pandas
+logging
+cherrypy
