@@ -179,7 +179,7 @@ def btf_parse():
     finally:
         bitfinex = []
         for i in bitfinex_data:
-            bitfinex.append( (i[0][1:4].lower()+'_'+i[0][4:7].lower(),i[7] ))
+            bitfinex.append( (i[0][1:4].lower()+'_'+i[0][4:7].lower(),i[7],btfnx_id[0],bitfinex_answer))
         conn = psycopg2.connect(conn_string)
         cur = conn.cursor()
         psycopg2.extras.execute_values(cur, "INSERT INTO btfnx(br, value, idt, answer) values %s", bitfinex)
