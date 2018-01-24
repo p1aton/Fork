@@ -2,10 +2,50 @@ from celery.task import task
 import psycopg2
 import requests
 import psycopg2.extras
+from poloniex import Poloniex
+import binance
+from binance.client import Client
+
+@task
+def wex_parse():
+    conn_string = "dbname='igor'"
+    try:
+        conn = psycopg2.connect(conn_string)
+        cur = conn.cursor()
+        cur.execute("INSERT INTO wex_ts(ts) VALUES (CURRENT_TIMESTAMP);")
+        cur.execute("SELECT CURRVAL('wex_ts_id_seq');")
+        wex_id = cur.fetchone()
+        conn.commit()
+        cur.close()
+        conn.close()
+        wex_data = requests.get(
+                'https://wex.nz/api/3/ticker/btc_usd-btc_eur-dsh_btc-dsh_usd-dsh_eur-eth_usd-eth_btc-eth_eur-bch_usd-bch_eur-bch_btc-zec_btc-zec_usd-btc_rur-ltc_btc-ltc_usd-ltc_rur-ltc_eur-nmc_btc-nmc_usd-nvc_btc-nvc_usd-usd_rur-eur_usd-eur_rur-ppc_btc-ppc_usd-dsh_rur-dsh_ltc-eth_ltc-eth_rur-bch_rur-bch_ltc-bch_dsh?ignore_invalid=1',timeout=2)
+        wex_answer = 1
+        words = ['bch_btc','bch_eur','bch_usd','btc_eur','btc_usd','dsh_btc','dsh_eur','dsh_usd','eth_btc','eth_eur','eth_usd',
+         'zec_btc', 'zec_usd','btc_rur','ltc_btc','ltc_usd','ltc_rur','ltc_eur','nmc_btc','nmc_usd','nvc_btc','nvc_usd',
+        'usd_rur','eur_usd','eur_rur','ppc_btc','ppc_usd','dsh_rur','dsh_ltc','eth_ltc','eth_rur','bch_rur','bch_ltc','bch_dsh']
+        d = []
+        for x in words:
+            d.append(wex_data.json()[x]['last'])
+        for i in range(0,len(words)):
+            if words[i][4:7] == 'rur':
+                words[i] = words[i][0:4] + 'rub' 
+    except requests.exceptions.Timeout:
+        wex_answer = 0
+    finally:
+        wex = []
+        for i in range(0,len(words)):
+            wex.append((words[i], d[i], wex_id[0],wex_answer))
+        conn = psycopg2.connect(conn_string)
+        cur = conn.cursor()
+        psycopg2.extras.execute_values(cur, "INSERT INTO wex(br, value, idt, answer) values %s", wex)
+        conn.commit()
+        cur.close()
+        conn.close()
 
 @task
 def cex_parse():
-    conn_string = "dbname='igor' user='server' password='Chordify2811' host='138.197.179.83'"
+    conn_string = "dbname='igor'"
     try:
         conn = psycopg2.connect(conn_string)
         cur = conn.cursor()
@@ -49,42 +89,148 @@ def cex_parse():
         cur.close()
         conn.close()
 
-        
-        
-        
 @task
-def wex_parse():
-    conn_string = "dbname='igor' user='server' password='Chordify2811' host='138.197.179.83'"
+def pol_parse():
+    conn_string = "dbname='igor'"
+    polo = Poloniex()
+    poloniex_tickers = ['BTC_DASH','BTC_LTC','BTC_XRP','BTC_ETH','USDT_ETH','USDT_BTC','USDT_DASH','USDT_LTC','USDT_XRP','USDT_XMR',
+                'XMR_LTC','XMR_DASH','BTC_ETC','ETH_ETC','USDT_ETC','BTC_ZEC','ETH_ZEC','USDT_ZEC','BTC_BCH','ETH_BCH','USDT_BCH']
+
+    poloniex_words = ['dsh_btc','ltc_btc','xrp_btc','eth_btc','eth_usd','btc_usd','dsh_usd','ltc_usd','xrp_usd','xmr_usd',
+                     'ltc_xmr','dsh_xmr','etc_btc','etc_eth','etc_usd','zec_btc','zec_eth','zec_usd','bch_btc','bch_eth','bch_usd']
     try:
         conn = psycopg2.connect(conn_string)
         cur = conn.cursor()
-        cur.execute("INSERT INTO wex_ts(ts) VALUES (CURRENT_TIMESTAMP);")
-        cur.execute("SELECT CURRVAL('wex_ts_id_seq');")
-        wex_id = cur.fetchone()
+        cur.execute("INSERT INTO pol_ts(ts) VALUES (CURRENT_TIMESTAMP);")
+        cur.execute("SELECT CURRVAL('pol_ts_id_seq');")
+        pol_id = cur.fetchone()
+        cur.execute("SELECT usdt FROM usdt_com ORDER BY id DESC LIMIT 1;")
+        usdt_usd = float(cur.fetchone()[0])
+        conn.commit()
+        cur.close()
+        conn.close()                
+        poloniex_data = polo.returnTicker() 
+        poloniex_last_price = []
+        for i in poloniex_tickers:
+            poloniex_last_price.append(poloniex_data[i]['last'])        
+        poloniex_answer = 1
+    except Exception:
+        poloniex_answer = 0
+    finally:
+        poloniex = []
+        for i in range(0,len(poloniex_words)):
+            if poloniex_tickers[i][0:4] == 'USDT':
+                poloniex.append((poloniex_words[i],poloniex_last_price[i]*usdt_usd, pol_id[0],poloniex_answer))
+            else:
+                poloniex.append((poloniex_words[i],poloniex_last_price[i], pol_id[0],poloniex_answer))
+        conn = psycopg2.connect(conn_string)
+        cur = conn.cursor()
+        psycopg2.extras.execute_values(cur, "INSERT INTO pol(br, value, idt, answer) values %s", poloniex)
+        conn.commit()
+        cur.close()
+        conn.close()    
+        poloniex = []
+
+@task
+def bnn_parse():
+    conn_string = "dbname='igor'"
+    client = Client('dtiWWNHXnLzD2RNe2QivRsRnrUoKWZksOgl9MwZEGuTFdyr3X2hnLZgzC5OgFp93', 
+                   'LjprvlFaGf6rc42eAynezgApSbEcCYz9YGWU3EsLO9bmMxJkhDc41YrLodjnzfPR')
+    binance_pairs = ['ETHBTC','LTCBTC','NEOBTC','BTCUSDT','ETHUSDT','ZECBTC','ZECETH','ETCETH','ETCBTC','DASHBTC','DASHETH','XRPBTC',
+                    'XRPETH','XMRBTC','XMRETH','LTCETH','LTCUSDT']
+    binance_nums = ['eth_btc','ltc_btc','neo_btc','btc_usd','eth_usd','zec_btc','zec_eth','etc_eth','etc_btc','dsh_btc','dsh_eth',
+                    'xrp_btc','xrp_eth','xmr_btc','xmr_eth','ltc_eth','ltc_usd']
+
+    try:
+        conn = psycopg2.connect(conn_string)
+        cur = conn.cursor()
+        cur.execute("INSERT INTO binance_ts(ts) VALUES (CURRENT_TIMESTAMP);")
+        cur.execute("SELECT CURRVAL('binance_ts_id_seq');")
+        binance_id = cur.fetchone()
+        cur.execute("SELECT usdt FROM usdt_com ORDER BY id DESC LIMIT 1;")
+        usdt_usd = float(cur.fetchone()[0])
         conn.commit()
         cur.close()
         conn.close()
-        wex_data = requests.get(
-                'https://wex.nz/api/3/ticker/btc_usd-btc_eur-dsh_btc-dsh_usd-dsh_eur-eth_usd-eth_btc-eth_eur-bch_usd-bch_eur-bch_btc-zec_btc-zec_usd-btc_rur-ltc_btc-ltc_usd-ltc_rur-ltc_eur-nmc_btc-nmc_usd-nvc_btc-nvc_usd-usd_rur-eur_usd-eur_rur-ppc_btc-ppc_usd-dsh_rur-dsh_ltc-eth_ltc-eth_rur-bch_rur-bch_ltc-bch_dsh?ignore_invalid=1',timeout=2)
-        wex_answer = 1
-        words = ['bch_btc','bch_eur','bch_usd','btc_eur','btc_usd','dsh_btc','dsh_eur','dsh_usd','eth_btc','eth_eur','eth_usd',
-         'zec_btc', 'zec_usd','btc_rur','ltc_btc','ltc_usd','ltc_rur','ltc_eur','nmc_btc','nmc_usd','nvc_btc','nvc_usd',
-        'usd_rur','eur_usd','eur_rur','ppc_btc','ppc_usd','dsh_rur','dsh_ltc','eth_ltc','eth_rur','bch_rur','bch_ltc','bch_dsh']
-        d = []
-        for x in words:
-            d.append(wex_data.json()[x]['last'])
-        for i in range(0,len(words)):
-            if words[i][4:7] == 'rur':
-                words[i] = words[i][0:4] + 'rub' 
-    except requests.exceptions.Timeout:
-        wex_answer = 0
+        prices = client.get_all_tickers()
+        binance_values = []
+        binance_p = []
+        binance_s = []
+        binance_right_p = []
+        for i in range(0,len(prices)):
+                binance_p.append(prices[i]['price'])
+                binance_s.append(prices[i]['symbol'])
+        binance_i = dict(zip(binance_s,binance_p))
+
+        for i in range(0,len(binance_pairs)):
+            if binance_pairs[i][3:6] == 'USD':
+                binance_values.append(float(binance_i[binance_pairs[i]])*1.01)
+            else:
+                binance_values.append(binance_i[binance_pairs[i]])
+        binance_answer = 1
+    except Exception:
+        binance_answer = 0
     finally:
-        wex = []
-        for i in range(0,len(words)):
-            wex.append((words[i], d[i], wex_id[0],wex_answer))
+        binance = []
+        for i in range(0,len(binance_nums)):
+            binance.append((binance_nums[i], binance_values[i], binance_id[0],binance_answer))
         conn = psycopg2.connect(conn_string)
         cur = conn.cursor()
-        psycopg2.extras.execute_values(cur, "INSERT INTO wex(br, value, idt, answer) values %s", wex)
+        psycopg2.extras.execute_values(cur, "INSERT INTO binance(br, value, idt, answer) values %s", binance)
+        conn.commit()
+        cur.close()
+        conn.close()
+
+@task
+def btx_parse():
+    conn_string = "dbname='igor'"
+    try:
+        bittrex_pairs = ['BTC-DASH','BTC-ETC','BTC-ETH','BTC-LTC','BTC-NEO','BTC-XMR','BTC-XRP','BTC-ZEC','ETH-DASH','ETH-LTC',
+                          'ETH-NEO','ETH-XMR','ETH-XRP','ETH-ZEC','USDT-BTC','USDT-DASH','USDT-ETC','USDT-ETH','USDT-LTC','USDT-NEO',
+                         'USDT-XMR','USDT-XRP','USDT-ZEC']
+        bittrex_nums = ['dsh_btc','etc_btc','eth_btc','ltc_btc','neo_btc','xmr_btc','xrp_btc','zec_btc','dsh_eth','ltc_eth',
+                        'neo_eth','xmr_eth','xrp_eth','zec_eth','btc_usd','dsh_usd','etc_usd','eth_usd','ltc_usd','neo_usd',
+                        'xmr_usd','xrp_usd','zec_usd']
+        conn = psycopg2.connect(conn_string)
+        cur = conn.cursor()
+        cur.execute("INSERT INTO bittrex_ts(ts) VALUES (CURRENT_TIMESTAMP);")
+        cur.execute("SELECT CURRVAL('bittrex_ts_id_seq');")
+        bittrex_id = cur.fetchone()
+        cur.execute("SELECT usdt FROM usdt_com ORDER BY id DESC LIMIT 1;")
+        usdt_usd = float(cur.fetchone()[0])
+        conn.commit()
+        cur.close()
+        conn.close()
+        data = requests.get('https://bittrex.com/api/v1.1/public/getmarketsummaries', timeout = 3).json()
+
+        bittrex_s = []
+        bittrex_p = []
+        bittrex_values = []
+
+        for i in data['result']:
+            bittrex_s.append(i['MarketName'])
+            bittrex_p.append(i['Last'])
+
+        bittrex_price = dict(zip(bittrex_s,bittrex_p))
+
+        for i in bittrex_pairs:
+            bittrex_values.append(bittrex_price[i])
+
+        bittrex_answer = 1
+
+    except Exception:
+        bittrex_answer = 0
+
+    finally:
+        bittrex = []
+        for i in range(len(bittrex_nums)):
+            if bittrex_nums[i][4:7] == 'usd':
+                bittrex.append((bittrex_nums[i],float(bittrex_values[i]) * usdt_usd, bittrex_id[0],bittrex_answer,))
+            else:  
+                bittrex.append((bittrex_nums[i],bittrex_values[i], bittrex_id[0],bittrex_answer,))
+        conn = psycopg2.connect(conn_string)
+        cur = conn.cursor()
+        psycopg2.extras.execute_values(cur, "INSERT INTO bittrex(br, value, idt, answer) values %s", bittrex)
         conn.commit()
         cur.close()
         conn.close()
