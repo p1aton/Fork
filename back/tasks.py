@@ -258,3 +258,29 @@ def btx_parse():
         conn.commit()
         cur.close()
         conn.close()
+@task
+def btf_parse():
+    conn_string = "dbname='igor'"
+    try:
+        conn = psycopg2.connect(conn_string)
+        cur = conn.cursor()
+        cur.execute("INSERT INTO btfnx_ts(ts) VALUES (CURRENT_TIMESTAMP);")
+        cur.execute("SELECT CURRVAL('btfnx_ts_id_seq');")
+        btfnx_id = cur.fetchone()
+        conn.commit()
+        cur.close()
+        conn.close() 
+        bitfinex_data = requests.get('''https://api.bitfinex.com/v2/tickers?symbols=tBTCUSD,tLTCUSD,tLTCBTC,tETHUSD,tETHBTC,tETCBTC,tETCUSD,tZECUSD,tZECBTC,tXMRUSD,tXMRBTC,tDSHUSD,tDSHBTC,tBTCEUR,tXRPBTC,tXRPBTC,tBCHUSD,tBCHBTC,tBCHETH''').json()
+        bitfinex_answer=1
+    except:
+        bitfinex_answer = 0
+    finally:
+        bitfinex = []
+        for i in bitfinex_data:
+            bitfinex.append( (i[0][1:4].lower()+'_'+i[0][4:7].lower(),i[7] ))
+        conn = psycopg2.connect(conn_string)
+        cur = conn.cursor()
+        psycopg2.extras.execute_values(cur, "INSERT INTO btfnx(br, value, idt, answer) values %s", bitfinex)
+        conn.commit()
+        cur.close()
+        conn.close()
