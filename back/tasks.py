@@ -3,21 +3,7 @@ import psycopg2
 import requests
 import psycopg2.extras
 
-<<<<<<< HEAD
 @task
-=======
-app = Celery('proj', broker='amqp://')
-app.conf.beat_schedule = {
-                            'add-every-10-seconds': {
-                            'task': 'task.add',
-                            'schedule': datetime.timedelta(seconds=10),
-                            'args': (2, 2)
-                            },
-}
-
-
-@app.task
->>>>>>> 4c7d958d37d4403700b9c6298c061d110125ca66
 def cex_parse():
     conn_string = "dbname='igor' user='server' password='Chordify2811' host='138.197.179.83'"
     try:
